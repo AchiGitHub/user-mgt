@@ -9,10 +9,11 @@ import ListItemButton from "@mui/material/ListItemButton";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
 import Toolbar from "@mui/material/Toolbar";
-import { SidebarContent } from "../../common/utils/constants";
 import { Icon } from "@mui/material";
 import { useRouter } from "next/router";
 import Image from "next/image";
+
+import { SidebarContent } from "../../common/utils/constants";
 
 const drawerWidth = 240;
 
@@ -43,8 +44,8 @@ export default function DrawerComponent({
 
   const drawer = (
     <div>
-      <Toolbar style={{ padding: 0 }}>
-        <Image width={300} height={120} src={require('../../public/logo.jpeg')} alt="system logo" />
+      <Toolbar style={{ backgroundColor: '#000', justifyContent: 'center' }}>
+        <Image width={150} height={60} src={require('../../public/logo.jpeg')} alt="system logo" />
       </Toolbar>
       <Divider />
       <List>

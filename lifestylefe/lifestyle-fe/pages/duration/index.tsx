@@ -30,6 +30,7 @@ export async function getServerSideProps() {
 }
 
 function Durations({ durations, error }: DurationsProps) {
+  
   const route = useRouter();
 
   const [availableDurations, setAvailableDurations] = useState<any[]>([]);
@@ -49,7 +50,7 @@ function Durations({ durations, error }: DurationsProps) {
       disableColumnMenu: true,
       renderHeader: () => {
         return (
-          <IconButton onClick={handleDeleteDurations}>
+          <IconButton onClick={handleDeleteDurations} disabled={!selectedIds}>
             <Delete />
           </IconButton>
         );
