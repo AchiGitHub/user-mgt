@@ -20,6 +20,7 @@ import java.util.UUID;
 @RestController
 @RequestMapping("/v1/membership/type")
 @Slf4j
+@CrossOrigin(origins = "http://localhost:3000", maxAge = 3600)
 public class MembershipTypeController {
     private MembershipTypeService membershipTypeService;
     private ModelMapper modelMapper;
@@ -55,6 +56,15 @@ public class MembershipTypeController {
             return ResponseEntity.status(membershipTypes.getError().getStatus()).body(membershipTypes);
         }
         return ResponseEntity.ok(membershipTypes);
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity getMembershipTypeById(@PathVariable UUID id) {
+        TransportDto membershipType = membershipTypeService.getMembershipTypeById(id);
+        if (membershipType.getError() != null) {
+            return ResponseEntity.status(membershipType.getError().getStatus()).body(membershipType);
+        }
+        return ResponseEntity.ok(membershipType);
     }
 
     @DeleteMapping("/{id}")

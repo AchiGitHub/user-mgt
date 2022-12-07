@@ -10,4 +10,5 @@ public interface MembershipTypeService {
     TransportDto getAllMembershipTypes();
     boolean deleteMembershipType(UUID id);
     TransportDto updateMembershipType(UUID id, MembershipType membershipType);
+    TransportDto getMembershipTypeById(UUID id);
 }

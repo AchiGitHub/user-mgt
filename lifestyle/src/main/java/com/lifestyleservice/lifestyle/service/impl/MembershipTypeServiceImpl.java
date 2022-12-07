@@ -97,4 +97,10 @@ public class MembershipTypeServiceImpl implements MembershipTypeService {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Membership type not found!", e);
         }
     }
+
+    @Override
+    public TransportDto getMembershipTypeById(UUID id) {
+        MembershipType membershipType = membershipRepository.findById(id).get();
+        return requestHelper.setResponse(membershipType);
+    }
 }
