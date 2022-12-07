@@ -28,3 +28,35 @@ export const MembershipTypeInitialValues = {
     numberOfMembers: "",
     durationId: ""
 };
+
+
+export const RegisterFormModel = {
+    formId: 'registerForm',
+    formField: {
+        membershipType: {
+            name: 'membershipType',
+            label: 'Membership Type',
+            requiredErrorMsg: 'Membership Type is required'
+        },
+        startDate: {
+            name: 'startDate',
+            label: 'Start Date',
+            requiredErrorMsg: 'Start Date is required'
+        },
+        endDate: {
+            name: 'endDate',
+            label: 'End Date',
+            requiredErrorMsg: 'End Date is required'
+        },
+        amount: {
+            name: 'amount',
+            label: 'Amount',
+            requiredErrorMsg: 'Amount is required'
+        },
+        name: {
+            name: 'name',
+            label: 'Registration Name',
+            requiredErrorMsg: 'Registration Name is required'
+        },
+    }
+};
