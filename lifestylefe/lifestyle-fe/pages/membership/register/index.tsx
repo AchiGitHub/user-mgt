@@ -53,7 +53,7 @@ export default function Register({ response }: RegisterProps) {
       case 0:
         return <MembershipSelection membershipTypes={response} formField={formField} />;
         case 1:
-          return <Members formField={formField} />;
+          return <Members membershipTypes={response} />;
           case 2:
             return <Summary />;
             default:
@@ -108,10 +108,13 @@ export default function Register({ response }: RegisterProps) {
             </Box>
           </React.Fragment>
         ) : (
-          <React.Fragment>
+          <Container style={{ marginTop: 15 }}>
             <Formik
               initialValues={{
-                name: ""
+                name: "",
+                membershipType: '',
+                amount: "",
+                users: []
               }}
               validationSchema={currentValidationSchema}
               onSubmit={handleSubmit}
@@ -135,7 +138,7 @@ export default function Register({ response }: RegisterProps) {
                 </Form>
               )}
             </Formik>
-          </React.Fragment>
+          </Container>
         )}
       </Box>
     </Container>

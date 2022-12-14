@@ -5,6 +5,7 @@ import PaymentIcon from '@mui/icons-material/Payment';
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 
 import { Sidebar } from '../types/Sidebar';
+import moment from 'moment';
 
 export const BASE_URL = "http://localhost:9002/v1";
 
@@ -20,6 +21,17 @@ export const DurationInitialValues = {
     durationType: "",
     duration: 0
 };
+
+export const Gender = [
+    {
+        id: 0,
+        label: 'Male'
+    },
+    {
+        id: 1,
+        label: 'Female'
+    },
+]
 
 export const MembershipTypeInitialValues = {
     id: "",
@@ -60,3 +72,22 @@ export const RegisterFormModel = {
         },
     }
 };
+
+export const RegisterValues = {
+    name: "",
+    membershipType: '',
+    amount: "",
+    startDate: moment().toISOString(),
+    endDate: moment().toISOString(),
+    users: []
+}
+
+export const MemberPayload = {
+    "firstName": "",
+    "lastName": "",
+    "dob": new Date().toISOString(),
+    "nic": "",
+    "address": "",
+    "mobileNumber": "",
+    "gender": 0
+}
