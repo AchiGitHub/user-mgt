@@ -16,7 +16,7 @@ function MembershipSelection({
   membershipTypes,
   formField,
 }: MembershipSelectionProps) {
-  const { name, membershipType, startDate, endDate, amount } = formField;
+  const { name, membershipType, startDate, endDate, amount, paymentAmount } = formField;
   const { values, touched, errors, handleChange, setFieldValue } =
     useFormikContext<RegisterTypes>();
 
@@ -27,13 +27,19 @@ function MembershipSelection({
     if (selectedMembershipType > -1) {
       setFieldValue(membershipType.name, value);
       setFieldValue(amount.name, membershipTypes[selectedMembershipType].price);
+      setFieldValue(paymentAmount.name, membershipTypes[selectedMembershipType].price);
       setFieldValue("users", getUsersArray(membershipTypes[selectedMembershipType].numberOfMembers));
     }
   };
 
+  const handleAmountChange = (e: any) => {
+    setFieldValue(amount.name, e.target.value);
+    setFieldValue("paymentAmount", e.target.value);
+  }
+
   return (
     <React.Fragment>
-      <Typography variant="h6" gutterBottom>
+      <Typography variant="h6" gutterBottom sx={{ padding: 1 }}>
         Package Details
       </Typography>
       <Grid container spacing={3}>
@@ -122,7 +128,7 @@ function MembershipSelection({
             name={amount.name}
             label={amount.label}
             value={values.amount}
-            onChange={handleChange}
+            onChange={handleAmountChange}
             error={touched.amount && Boolean(errors.amount)}
             helperText={touched.amount && errors.amount}
             disabled={false}

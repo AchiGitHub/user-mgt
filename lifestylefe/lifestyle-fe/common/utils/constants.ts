@@ -31,7 +31,18 @@ export const Gender = [
         id: 1,
         label: 'Female'
     },
-]
+];
+
+export const PaymentTypes = [
+    {
+        id: 0,
+        label: 'Cash'
+    },
+    {
+        id: 1,
+        label: 'Wire Transfer'
+    },
+];
 
 export const MembershipTypeInitialValues = {
     id: "",
@@ -70,6 +81,16 @@ export const RegisterFormModel = {
             label: 'Registration Name',
             requiredErrorMsg: 'Registration Name is required'
         },
+        paymentAmount: {
+            name: 'paymentAmount',
+            label: 'Payment Amount',
+            requiredErrorMsg: 'Payment amount is required'
+        },
+        paymentType: {
+            name: 'paymentType',
+            label: 'Payment Type',
+            requiredErrorMsg: 'Payment type is required'
+        },
     }
 };
 
@@ -79,7 +100,9 @@ export const RegisterValues = {
     amount: "",
     startDate: moment().toISOString(),
     endDate: moment().toISOString(),
-    users: []
+    users: [],
+    paymentAmount: 0,
+    paymentType: 0
 }
 
 export const MemberPayload = {

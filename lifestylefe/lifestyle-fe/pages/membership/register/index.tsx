@@ -9,8 +9,8 @@ import { Container } from "@mui/system";
 import { Form, Formik, FormikConfig, FormikValues } from "formik";
 import MembershipSelection from "../../../components/ui/Register/MembershipSelection";
 import Members from "../../../components/ui/Register/Members";
-import Summary from "../../../components/ui/Register/Summary";
-import { BASE_URL, RegisterFormModel } from "../../../common/utils/constants";
+import Payment from "../../../components/ui/Register/Payments";
+import { BASE_URL, RegisterFormModel, RegisterValues } from "../../../common/utils/constants";
 import { MembershipType } from "../../../common/types/Common";
 import validationSchema from "../../../common/utils/validationSchema";
 
@@ -36,7 +36,7 @@ export async function getServerSideProps() {
   };
 }
 
-const steps = ["General", "Add Members", "Summary", "Payment"];
+const steps = ["General", "Add Members", "Payment"];
 
 export default function Register({ response }: RegisterProps) {
   const { formId, formField } = RegisterFormModel;
@@ -55,7 +55,7 @@ export default function Register({ response }: RegisterProps) {
         case 1:
           return <Members membershipTypes={response} />;
           case 2:
-            return <Summary />;
+            return <Payment formField={formField} membershipTypes={response} />;
             default:
               return <div>not found</div>;
             }
@@ -110,12 +110,7 @@ export default function Register({ response }: RegisterProps) {
         ) : (
           <Container style={{ marginTop: 15 }}>
             <Formik
-              initialValues={{
-                name: "",
-                membershipType: '',
-                amount: "",
-                users: []
-              }}
+              initialValues={RegisterValues}
               validationSchema={currentValidationSchema}
               onSubmit={handleSubmit}
             >

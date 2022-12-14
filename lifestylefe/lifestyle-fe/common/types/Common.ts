@@ -9,7 +9,7 @@ export type ToastType = {
 export type MembershipType = {
     id: string,
     membershipName: string,
-    price: number | string,
+    price: number,
     numberOfMembers: number,
     durationId: string
 };
@@ -20,5 +20,7 @@ export type RegisterTypes = {
     amount: string,
     startDate: string,
     endDate: string,
-    users: typeof MemberPayload[]
+    users: typeof MemberPayload[],
+    paymentAmount: string,
+    paymentType: number
 }
