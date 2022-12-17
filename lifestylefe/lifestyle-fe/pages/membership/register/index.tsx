@@ -1,141 +1,79 @@
-import * as React from "react";
-import Box from "@mui/material/Box";
-import Stepper from "@mui/material/Stepper";
-import Step from "@mui/material/Step";
-import StepLabel from "@mui/material/StepLabel";
-import Button from "@mui/material/Button";
-import Typography from "@mui/material/Typography";
-import { Container } from "@mui/system";
-import { Form, Formik, FormikConfig, FormikValues } from "formik";
-import MembershipSelection from "../../../components/ui/Register/MembershipSelection";
-import Members from "../../../components/ui/Register/Members";
-import Payment from "../../../components/ui/Register/Payments";
-import { BASE_URL, RegisterFormModel, RegisterValues } from "../../../common/utils/constants";
-import { MembershipType } from "../../../common/types/Common";
-import validationSchema from "../../../common/utils/validationSchema";
-
-interface RegisterProps {
-  response: MembershipType[]
-}
+import { Button, Container } from "@mui/material";
+import { useRouter } from "next/router";
+import React from "react";
+import { BASE_URL } from "../../../common/utils/constants";
+import { RegisterTypes } from "../../../common/types/Common";
+import { DataGrid, GridColDef } from "@mui/x-data-grid";
+import moment from "moment";
 
 export async function getServerSideProps() {
-  let response = {};
+  let response = [];
   let error = {};
   try {
-    const membershipTypes = await fetch(`${BASE_URL}/membership/type`);
-    const data = await membershipTypes.json();
-    response = data.response;
+    const resp = await fetch(`${BASE_URL}/registration`);
+    const members = await resp.json();
+    response = members.response;
   } catch (error) {
     error = "Something went wrong!";
   }
   return {
     props: {
-      response,
+      registrations: response,
       error,
     },
   };
 }
 
-const steps = ["General", "Add Members", "Payment"];
+interface RegisterProps {
+  registrations: RegisterTypes[];
+}
 
-export default function Register({ response }: RegisterProps) {
-  const { formId, formField } = RegisterFormModel;
+function Registrations({ registrations }: RegisterProps) {
+  const route = useRouter();
 
-  const [activeStep, setActiveStep] = React.useState(0);
-  const [loading, setLoading] = React.useState(false);
-  
-  const isLastStep = activeStep === steps.length - 1;
-
-  const currentValidationSchema = validationSchema[activeStep];
-  
-  const _renderForm = (step: number) => {
-    switch (step) {
-      case 0:
-        return <MembershipSelection membershipTypes={response} formField={formField} />;
-        case 1:
-          return <Members membershipTypes={response} />;
-          case 2:
-            return <Payment formField={formField} membershipTypes={response} />;
-            default:
-              return <div>not found</div>;
-            }
-          };
-          
-          const handleNext = () => {
-            setActiveStep((prevActiveStep) => prevActiveStep + 1);
-          };
-          
-          const handleBack = () => {
-    setActiveStep((prevActiveStep) => prevActiveStep - 1);
-  };
-
-  const handleReset = () => {
-    setActiveStep(0);
-  };
-
-  const handleSubmit = (values: FormikValues, actions: any) => {
-    if (isLastStep) {
-      console.log("Last step to create");
-    } else {
-      setActiveStep((prevActiveStep) => prevActiveStep + 1);
-    }
-  };
+  const columns: GridColDef[] = [
+    { field: "name", headerName: "Registration Name", minWidth: 200 },
+    { field: "membershipType", headerName: "Membership Type", minWidth: 200, renderCell: ({value}) => <div>{value.membershipName}</div> },
+    {
+      field: "startDate",
+      headerName: "Start Date",
+      minWidth: 150,
+      renderCell: (startDate: any) => <div>{moment(startDate.value).format("YYYY-MM-DD")}</div>,
+    },
+    {
+      field: "endDate",
+      headerName: "End Date",
+      minWidth: 150,
+      renderCell: (endDate: any) => <div>{moment(endDate.value).format("YYYY-MM-DD")}</div>,
+    },
+    { field: "amount", headerName: "Amount", minWidth: 150 },
+    { field: "users", headerName: "Member", minWidth: 150, renderCell: ({value}) =>  <div>{`${value[0].firstName} ${value[0].lastName}`}</div>},
+  ];
 
   return (
-    <Container maxWidth="md">
-      <Box sx={{ width: "100%" }}>
-        <Stepper activeStep={activeStep}>
-          {steps.map((label, index) => {
-            const stepProps: { completed?: boolean } = {};
-            const labelProps: {
-              optional?: React.ReactNode;
-            } = {};
-            return (
-              <Step key={label} {...stepProps}>
-                <StepLabel {...labelProps}>{label}</StepLabel>
-              </Step>
-            );
-          })}
-        </Stepper>
-        {activeStep === steps.length ? (
-          <React.Fragment>
-            <Typography sx={{ mt: 2, mb: 1 }}>
-              All steps completed - you&apos;re finished
-            </Typography>
-            <Box sx={{ display: "flex", flexDirection: "row", pt: 2 }}>
-              <Box sx={{ flex: "1 1 auto" }} />
-              <Button onClick={handleReset}>Reset</Button>
-            </Box>
-          </React.Fragment>
-        ) : (
-          <Container style={{ marginTop: 15 }}>
-            <Formik
-              initialValues={RegisterValues}
-              validationSchema={currentValidationSchema}
-              onSubmit={handleSubmit}
-            >
-              {({ isSubmitting }: any) => (
-                <Form id={formId}>
-                  {_renderForm(activeStep)}
-                  <Box sx={{ display: "flex", flexDirection: "row", pt: 2 }}>
-                    <Button
-                      disabled={activeStep === 0}
-                      onClick={handleBack}
-                      sx={{ mr: 1 }}
-                    >
-                      Back
-                    </Button>
-                    <Box sx={{ flex: "1 1 auto" }} />
-                    <Button type="submit" variant="contained">
-                      {activeStep === steps.length - 1 ? "Finish" : "Next"}
-                    </Button>
-                  </Box>
-                </Form>
-              )}
-            </Formik>
-          </Container>
-        )}
-      </Box>
+    <Container>
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "flex-end",
+          margin: "0 0 10px 0",
+        }}
+      >
+        <Button variant="contained" onClick={() => route.push("/membership/register/type")}>
+          Create Registration
+        </Button>
+      </div>
+      <div style={{ height: 400, width: "100%" }}>
+        <DataGrid
+          columns={columns}
+          rows={registrations}
+          pageSize={5}
+          rowsPerPageOptions={[5]}
+          sx={{ overflowX: "scroll" }}
+        />
+      </div>
     </Container>
   );
 }
+
+export default Registrations;

@@ -10,7 +10,7 @@ import moment from 'moment';
 export const BASE_URL = "http://localhost:9002/v1";
 
 export const SidebarContent: Sidebar[] = [
-    { text: 'Members', icon: GroupIcon, route: '/duration' },
+    { text: 'Members', icon: GroupIcon, route: '/members' },
     { text: 'Register', icon: AppRegistrationIcon, route: '/membership/register' },
     { text: 'Payments', icon: PaymentIcon, route: '/duration' },
     { text: 'Duration', icon: CalendarMonthIcon, route: '/duration' },
@@ -47,8 +47,8 @@ export const PaymentTypes = [
 export const MembershipTypeInitialValues = {
     id: "",
     membershipName: "",
-    price: "",
-    numberOfMembers: "",
+    price: 0,
+    numberOfMembers: 0,
     durationId: ""
 };
 
@@ -94,6 +94,47 @@ export const RegisterFormModel = {
     }
 };
 
+export const RenewFormModel = {
+    formId: 'renewForm',
+    formField: {
+        membershipType: {
+            name: 'membershipType',
+            label: 'Membership Type',
+            requiredErrorMsg: 'Membership Type is required'
+        },
+        startDate: {
+            name: 'startDate',
+            label: 'Start Date',
+            requiredErrorMsg: 'Start Date is required'
+        },
+        endDate: {
+            name: 'endDate',
+            label: 'End Date',
+            requiredErrorMsg: 'End Date is required'
+        },
+        users: {
+            name: 'users',
+            label: "Member(s)",
+            requiredErrorMsg: 'At least 1 member is required'
+        },
+        amount: {
+            name: 'amount',
+            label: 'Amount',
+            requiredErrorMsg: 'Amount is required'
+        },
+        paymentAmount: {
+            name: 'paymentAmount',
+            label: 'Payment Amount',
+            requiredErrorMsg: 'Payment amount is required'
+        },
+        paymentType: {
+            name: 'paymentType',
+            label: 'Payment Type',
+            requiredErrorMsg: 'Payment type is required'
+        },
+    }
+};
+
 export const RegisterValues = {
     name: "",
     membershipType: '',
@@ -113,4 +154,18 @@ export const MemberPayload = {
     "address": "",
     "mobileNumber": "",
     "gender": 0
+}
+
+export const RenewValues = {
+    name: "",
+    membershipType: '',
+    amount: "",
+    startDate: moment().toISOString(),
+    endDate: moment().toISOString(),
+    users: []
+}
+
+export const PaymentInitialValues = {
+    paymentType: "",
+    paymentAmount: ""
 }

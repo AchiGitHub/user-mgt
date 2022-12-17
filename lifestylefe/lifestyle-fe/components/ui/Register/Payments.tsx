@@ -28,7 +28,7 @@ function Payments({ membershipTypes, formField }: PaymentsProps) {
             hiddenLabel
             id={paymentType.name}
             name={paymentType.name}
-            label={paymentType.name}
+            label={paymentType.label}
             value={values.paymentType}
             onChange={handleChange}
             error={touched.paymentType && Boolean(errors.paymentType)}

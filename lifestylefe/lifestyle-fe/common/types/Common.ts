@@ -24,3 +24,32 @@ export type RegisterTypes = {
     paymentAmount: string,
     paymentType: number
 }
+
+export type RenewType = {
+    name: string,
+    membershipType: string,
+    amount: string,
+    startDate: string,
+    endDate: string,
+    users: typeof MemberPayload[],
+    paymentAmount: string,
+    paymentType: number
+}
+
+export type Member = {
+    id: string,
+    firstName: string,
+    lastName: string,
+    dob: string,
+    nic: string,
+    address: string,
+    mobileNumber: string,
+    secondaryNumber: string,
+    occupation: string,
+    gender: string
+}
+
+export type AutoCompleteProps = {
+    id: string;
+    label: string;
+}

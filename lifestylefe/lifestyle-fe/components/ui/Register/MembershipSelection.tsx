@@ -45,20 +45,6 @@ function MembershipSelection({
       <Grid container spacing={3}>
         <Grid item xs={12} sm={6}>
           <TextField
-            fullWidth
-            hiddenLabel
-            id={name.name}
-            name={name.name}
-            label={name.label}
-            value={values.name || ""}
-            onChange={handleChange}
-            error={touched.name && Boolean(errors.name)}
-            helperText={touched.name && errors.name}
-            disabled={false}
-          />
-        </Grid>
-        <Grid item xs={12} sm={6}>
-          <TextField
             select
             fullWidth
             hiddenLabel
@@ -76,6 +62,21 @@ function MembershipSelection({
               </MenuItem>
             ))}
           </TextField>
+        </Grid>
+        <Grid item xs={12} sm={6}>
+          <TextField
+            fullWidth
+            hiddenLabel
+            type="number"
+            id={amount.name}
+            name={amount.name}
+            label={amount.label}
+            value={values.amount}
+            onChange={handleAmountChange}
+            error={touched.amount && Boolean(errors.amount)}
+            helperText={touched.amount && errors.amount}
+            disabled={false}
+          />
         </Grid>
         <Grid item xs={12} sm={6}>
           <DesktopDatePicker
@@ -117,21 +118,6 @@ function MembershipSelection({
                 {...params}
               />
             )}
-          />
-        </Grid>
-        <Grid item xs={12} sm={12}>
-          <TextField
-            fullWidth
-            hiddenLabel
-            type="number"
-            id={amount.name}
-            name={amount.name}
-            label={amount.label}
-            value={values.amount}
-            onChange={handleAmountChange}
-            error={touched.amount && Boolean(errors.amount)}
-            helperText={touched.amount && errors.amount}
-            disabled={false}
           />
         </Grid>
       </Grid>
