@@ -1,9 +1,10 @@
 package com.lifestyleservice.lifestyle.service.impl;
 
+import com.lifestyleservice.lifestyle.dto.AllRegistrationsDto;
 import com.lifestyleservice.lifestyle.dto.GetRegistrationsDto;
 import com.lifestyleservice.lifestyle.dto.RegisterUserDto;
-import com.lifestyleservice.lifestyle.dto.RegistrationDto;
 import com.lifestyleservice.lifestyle.entity.Member;
+import com.lifestyleservice.lifestyle.entity.MembershipType;
 import com.lifestyleservice.lifestyle.entity.Payments;
 import com.lifestyleservice.lifestyle.entity.Registration;
 import com.lifestyleservice.lifestyle.repository.MemberRepository;
@@ -56,8 +57,8 @@ public class RegisterServiceImpl implements RegistrationService {
 
     @Override
     public TransportDto createRegistration(Registration register) {
-        registrationRepository.save(register);
-        TransportDto registration = requestHelper.setResponse(register);
+        Object reg = registrationRepository.save(register);
+        TransportDto registration = requestHelper.setResponse(reg);
         return registration;
     }
 
@@ -66,7 +67,25 @@ public class RegisterServiceImpl implements RegistrationService {
         List<Registration> allRegistrations = registrationRepository.findAll();
         List<GetRegistrationsDto> allRegistrationsDto = new ArrayList<>();
         if (allRegistrations != null) {
-            return requestHelper.setResponse(allRegistrations);
+            List<AllRegistrationsDto> regs = new ArrayList<>();
+            allRegistrations.forEach(reg -> {
+                AllRegistrationsDto newObj = new AllRegistrationsDto();
+                newObj.setId(reg.getId());
+                Optional<MembershipType> mt = membershipRepository.findById(reg.getMembershipType());
+                List<Optional<Member>> members = new ArrayList<>();
+                reg.getUsers().forEach(member -> {
+                    Optional<Member> getMem = memberRepository.findById(member);
+                    members.add(getMem);
+                });
+                newObj.setAmount(reg.getAmount());
+                newObj.setName(reg.getName());
+                newObj.setEndDate(reg.getEndDate());
+                newObj.setStartDate(reg.getStartDate());
+                newObj.setUsers(members);
+                newObj.setMembershipType(mt);
+                regs.add(newObj);
+            });
+            return requestHelper.setResponse(regs);
         } else {
             return requestHelper.setError(HttpStatus.NOT_FOUND, "No records found!");
         }
@@ -122,7 +141,8 @@ public class RegisterServiceImpl implements RegistrationService {
             List<Member> members = registerUserDto.getUsers();
             for(int i = 0; i < members.size(); i++) {
                 if (members.get(i).getFirstName() != "") {
-                    TransportDto member = memberService.createMember(members.get(i));
+                    Member model = modelMapper.map(members.get(i), Member.class);
+                    TransportDto member = memberService.createMember(model);
                     Member createdMember = (Member) member.getResponse();
                     userIds.add(createdMember.getId());
                 }
@@ -146,10 +166,12 @@ public class RegisterServiceImpl implements RegistrationService {
             Payments payment = new Payments();
             payment.setPaymentType(registerUserDto.getPaymentType());
             payment.setAmount(registerUserDto.getAmount());
+            payment.setRegistrationId(reg.getId());
             payment.setCreatedBy("SYSTEM");
             payment.setLastModifiedBy("SYSTEM");
             payment.setCreatedDate(LocalDateTime.now());
             payment.setLastModifiedDate(LocalDateTime.now());
+            payment.setCategory("Membership Fees");
 
             paymentsService.createPayment(payment);
 

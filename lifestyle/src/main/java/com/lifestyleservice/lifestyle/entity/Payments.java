@@ -26,4 +26,6 @@ public class Payments extends Auditable<String> {
     private Double amount;
     @NotNull
     private PaymentTypes paymentType;
+    @NotNull
+    private String category;
 }

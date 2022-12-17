@@ -19,6 +19,7 @@ import java.util.UUID;
 @RestController
 @RequestMapping("/v1/registration")
 @Slf4j
+@CrossOrigin(origins = "http://localhost:3000", maxAge = 3600)
 public class RegistrationController {
     private RegistrationService registrationService;
     private ModelMapper modelMapper;
@@ -39,12 +40,7 @@ public class RegistrationController {
         TransportDto createdRegistration = registrationService.createRegistration(res);
         log.info("Registration {}", createdRegistration);
 
-        URI location = ServletUriComponentsBuilder
-                .fromCurrentRequest()
-                .path("/{id}")
-                .buildAndExpand(createdRegistration.getResponse())
-                .toUri();
-        return ResponseEntity.created(location).build();
+        return ResponseEntity.ok(createdRegistration.getResponse());
     }
 
     @GetMapping("")
