@@ -1,4 +1,5 @@
 import { Container } from "@mui/material";
+import { GetServerSideProps } from "next";
 import { useRouter } from "next/router";
 import React, { useState } from "react";
 import { MembershipType, ToastType } from "../../../common/types/Common";
@@ -10,34 +11,57 @@ import Toast from "../../../components/ui/Toast/Toast";
 interface EditMembershipTypeProps {
   durations: Duration[];
   membership: MembershipType;
+  token: string;
 }
 
-export async function getServerSideProps({ params }: any) {
+export const getServerSideProps: GetServerSideProps<any> = async ({
+  params,
+  req,
+}) => {
   let durations = [];
   let membershipType;
   let error = {};
+  const token = req.cookies?.token;
   try {
-    const data = await fetch(`${BASE_URL}/membership/duration`);
+    const data = await fetch(`${BASE_URL}/membership/duration`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'application/json'
+      },
+    });
     const membershipData = await fetch(
-      `${BASE_URL}/membership/type/${params.id}`
+      `${BASE_URL}/membership/type/${params!.id}`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        },
+      }
     );
     const durationsList = await data.json();
     membershipType = await membershipData.json();
     durations = durationsList.response;
   } catch (error) {
-    error = "Something went wrong!";
+    return {
+      redirect: {
+        permanent: false,
+        destination: "/login",
+      },
+    };
   }
   return {
     props: {
       durations,
       membership: membershipType.response,
+      token,
     },
   };
-}
+};
 
 function EditMembershipType({
   durations,
   membership,
+  token,
 }: EditMembershipTypeProps) {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
@@ -70,7 +94,8 @@ function EditMembershipType({
         mode: "cors",
         cache: "no-cache",
         headers: {
-          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json'
         },
         body: JSON.stringify(requestPayload),
       });

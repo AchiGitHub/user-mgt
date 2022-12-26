@@ -1,34 +1,51 @@
 import { Container } from "@mui/material";
+import { GetServerSideProps } from "next";
 import { useRouter } from "next/router";
 import React, { useState } from "react";
 import { MembershipType, ToastType } from "../../../common/types/Common";
 import { Duration } from "../../../common/types/Durations";
-import { BASE_URL, MembershipTypeInitialValues } from "../../../common/utils/constants";
+import {
+  BASE_URL,
+  MembershipTypeInitialValues,
+} from "../../../common/utils/constants";
 import MembershipTypeForm from "../../../components/ui/MembershipTypeForm/MembershipTypeForm";
 import Toast from "../../../components/ui/Toast/Toast";
 
 interface AddMembershipTypeProps {
   durations: Duration[];
+  token: string;
 }
 
-export async function getServerSideProps() {
+export const getServerSideProps: GetServerSideProps<any> = async (context) => {
   let durations = [];
   let error = {};
+  const token = context.req.cookies?.token;
   try {
-    const data = await fetch(`${BASE_URL}/membership/duration`);
+    const data = await fetch(`${BASE_URL}/membership/duration`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'application/json'
+      },
+    });
     const durationsList = await data.json();
     durations = durationsList.response;
   } catch (error) {
-    error = "Something went wrong!";
+    return {
+      redirect: {
+        permanent: false,
+        destination: "/login",
+      },
+    };
   }
   return {
     props: {
       durations,
+      token
     },
   };
-}
+};
 
-function AddMembershipType({ durations }: AddMembershipTypeProps) {
+function AddMembershipType({ durations, token }: AddMembershipTypeProps) {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [openSnackbar, setOpenSnackbar] = useState<ToastType>({
@@ -60,7 +77,8 @@ function AddMembershipType({ durations }: AddMembershipTypeProps) {
         mode: "cors",
         cache: "no-cache",
         headers: {
-          "Content-Type": "application/json",
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
         },
         body: JSON.stringify(requestPayload),
       });

@@ -19,7 +19,6 @@ import java.util.UUID;
 @RestController
 @RequestMapping("/v1/registration")
 @Slf4j
-@CrossOrigin(origins = "http://localhost:3000", maxAge = 3600)
 public class RegistrationController {
     private RegistrationService registrationService;
     private ModelMapper modelMapper;

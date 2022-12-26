@@ -14,7 +14,6 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("/v1/payment")
-@CrossOrigin(origins = "http://localhost:3000", maxAge = 3600)
 public class PaymentsController {
     private PaymentsService paymentsService;
     private ModelMapper modelMapper;

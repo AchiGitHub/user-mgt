@@ -1,35 +1,56 @@
+import React, { useEffect, useState } from "react";
+import { GetServerSideProps } from "next";
 import { Delete } from "@mui/icons-material";
 import { Button, IconButton } from "@mui/material";
 import { Container } from "@mui/system";
 import { DataGrid, GridColDef, GridSelectionModel } from "@mui/x-data-grid";
 import { useRouter } from "next/router";
-import React, { useEffect, useState } from "react";
+import { Duration } from "../../common/types/Durations";
 import { BASE_URL } from "../../common/utils/constants";
 
 interface DurationsProps {
   durations: any[];
   error: any;
+  token: string;
 }
 
-export async function getServerSideProps() {
+type Data = {
+  durations: Duration[],
+  error: any
+}
+
+export const getServerSideProps: GetServerSideProps<Data> = async (context) => {
   let response = [];
   let error = {};
+  const token = context.req.cookies?.token;
   try {
-    const durations = await fetch(`${BASE_URL}/membership/duration`);
+    const durations = await fetch(`${BASE_URL}/membership/duration`, {
+      headers: {
+        "Authorization": `Bearer ${token}`,
+        'Content-Type': 'application/json'
+      }
+    });
     const durationsList = await durations.json();
     response = durationsList.response;
   } catch (error) {
-    error = "Something went wrong!";
+    return {
+      redirect: {
+        permanent: false,
+        destination: '/login'
+      }
+    }
   }
+  
   return {
     props: {
       durations: response,
+      token,
       error,
     },
   };
 }
 
-function Durations({ durations, error }: DurationsProps) {
+function Durations({ durations, token, error }: DurationsProps) {
   
   const route = useRouter();
 
@@ -66,7 +87,8 @@ function Durations({ durations, error }: DurationsProps) {
           mode: "cors",
           cache: "no-cache",
           headers: {
-            "Content-Type": "application/json",
+            "Authorization": `Bearer ${token}`,
+            'Content-Type': 'application/json'
           },
         });
         return id;

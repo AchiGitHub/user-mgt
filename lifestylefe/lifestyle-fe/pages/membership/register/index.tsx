@@ -5,30 +5,44 @@ import { BASE_URL } from "../../../common/utils/constants";
 import { RegisterTypes } from "../../../common/types/Common";
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
 import moment from "moment";
+import { GetServerSideProps } from "next";
 
-export async function getServerSideProps() {
+export const getServerSideProps: GetServerSideProps<any> = async (context) => {
   let response = [];
   let error = {};
+  const token = context.req.cookies?.token;
   try {
-    const resp = await fetch(`${BASE_URL}/registration`);
+    const resp = await fetch(`${BASE_URL}/registration`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'application/json'
+      },
+    });
     const members = await resp.json();
     response = members.response;
   } catch (error) {
-    error = "Something went wrong!";
+    return {
+      redirect: {
+        permanent: false,
+        destination: "/login",
+      },
+    };
   }
   return {
     props: {
       registrations: response,
       error,
+      token
     },
   };
 }
 
 interface RegisterProps {
   registrations: RegisterTypes[];
+  token: string;
 }
 
-function Registrations({ registrations }: RegisterProps) {
+function Registrations({ registrations, token }: RegisterProps) {
   const route = useRouter();
 
   const columns: GridColDef[] = [
@@ -46,8 +60,7 @@ function Registrations({ registrations }: RegisterProps) {
       minWidth: 150,
       renderCell: (endDate: any) => <div>{moment(endDate.value).format("YYYY-MM-DD")}</div>,
     },
-    { field: "amount", headerName: "Amount", minWidth: 150 },
-    { field: "users", headerName: "Member", minWidth: 150, renderCell: ({value}) =>  <div>{`${value[0].firstName} ${value[0].lastName}`}</div>},
+    { field: "amount", headerName: "Amount", minWidth: 150 }
   ];
 
   return (

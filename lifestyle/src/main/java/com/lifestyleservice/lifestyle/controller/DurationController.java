@@ -18,7 +18,6 @@ import java.util.UUID;
 @RestController
 @RequestMapping("/v1/membership/duration")
 @Slf4j
-@CrossOrigin(origins = "http://localhost:3000", maxAge = 3600)
 public class DurationController {
 
     private DurationService durationService;

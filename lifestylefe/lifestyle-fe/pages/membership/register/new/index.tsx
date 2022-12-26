@@ -23,32 +23,46 @@ import {
 import validationSchema from "../../../../common/utils/validationSchema";
 import { useRouter } from "next/router";
 import Toast from "../../../../components/ui/Toast/Toast";
+import { GetServerSideProps } from "next";
 
 interface RegisterProps {
   response: MembershipType[];
+  token: string;
 }
 
-export async function getServerSideProps() {
+export const getServerSideProps: GetServerSideProps<any> = async (context) => {
   let response = {};
   let error = {};
+  const token = context.req.cookies?.token;
   try {
-    const membershipTypes = await fetch(`${BASE_URL}/membership/type`);
+    const membershipTypes = await fetch(`${BASE_URL}/membership/type`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'application/json'
+      },
+    });
     const data = await membershipTypes.json();
     response = data.response;
   } catch (error) {
-    error = "Something went wrong!";
+    return {
+      redirect: {
+        permanent: false,
+        destination: "/login",
+      },
+    };
   }
   return {
     props: {
       response,
       error,
+      token
     },
   };
 }
 
 const steps = ["General", "Add Members", "Payment"];
 
-export default function Register({ response }: RegisterProps) {
+export default function Register({ response, token }: RegisterProps) {
   const router = useRouter();
   const { formId, formField } = RegisterFormModel;
 
@@ -123,7 +137,8 @@ export default function Register({ response }: RegisterProps) {
         mode: "cors",
         cache: "no-cache",
         headers: {
-          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json'
         },
         body: JSON.stringify(payload),
       });

@@ -13,6 +13,7 @@ import {
 import { DesktopDatePicker } from "@mui/x-date-pickers";
 import { Form, Formik, FormikValues, useFormikContext } from "formik";
 import moment from "moment";
+import { GetServerSideProps } from "next";
 import { useRouter } from "next/router";
 import React, { useState } from "react";
 import {
@@ -32,18 +33,34 @@ import {
 import RenewValidationSchema from "../../../../common/utils/RenewValidationSchema";
 import Toast from "../../../../components/ui/Toast/Toast";
 
-export async function getServerSideProps() {
+export const getServerSideProps: GetServerSideProps<any> = async (context) => {
   let response = [];
   let membershipTypesData = [];
   let error = {};
+  const token = context.req.cookies?.token;
   try {
-    const resp = await fetch(`${BASE_URL}/member`);
+    const resp = await fetch(`${BASE_URL}/member`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'application/json'
+      },
+    });
     const data = await resp.json();
-    const membershipTypes = await fetch(`${BASE_URL}/membership/type`);
+    const membershipTypes = await fetch(`${BASE_URL}/membership/type`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'application/json'
+      },
+    });
     membershipTypesData = await membershipTypes.json();
     response = data.response;
   } catch (error) {
-    error = "Something went wrong!";
+    return {
+      redirect: {
+        permanent: false,
+        destination: "/login",
+      },
+    };
   }
 
   return {
@@ -51,6 +68,7 @@ export async function getServerSideProps() {
       members: response,
       membershipTypes: membershipTypesData.response,
       error,
+      token
     },
   };
 }
@@ -58,22 +76,25 @@ export async function getServerSideProps() {
 interface RenewProps {
   members: Member[];
   membershipTypes: MembershipType[];
+  token: string;
 }
 
 interface RegistrationDetailsProps {
   members: Member[];
+  token: string;
   membershipTypes: MembershipType[];
   handleNext: (registrationId: string) => void;
 }
 
 interface PaymentProps {
   registrationId: string;
+  token: string;
   handleSubmit: () => void;
 }
 
 const steps = ["Package Details", "Payment"];
 
-function Renew({ members, membershipTypes }: RenewProps) {
+function Renew({ members, token, membershipTypes }: RenewProps) {
   const router = useRouter();
   const [activeStep, setActiveStep] = React.useState(0);
   const [registrationId, setRegistrationId] = useState("");
@@ -91,6 +112,7 @@ function Renew({ members, membershipTypes }: RenewProps) {
         return (
           <RegistrationDetails
             members={members}
+            token={token}
             membershipTypes={membershipTypes}
             handleNext={handleRenew}
           />
@@ -98,6 +120,7 @@ function Renew({ members, membershipTypes }: RenewProps) {
       case 1:
         return (
           <PaymentDetails
+            token={token}
             registrationId={registrationId}
             handleSubmit={() => router.push("/membership/register")}
           />
@@ -132,6 +155,7 @@ function Renew({ members, membershipTypes }: RenewProps) {
 // Register form
 const RegistrationDetails = ({
   members,
+  token,
   membershipTypes,
   handleNext,
 }: RegistrationDetailsProps) => {
@@ -155,7 +179,8 @@ const RegistrationDetails = ({
         mode: "cors",
         cache: "no-cache",
         headers: {
-          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json'
         },
         body: JSON.stringify(values),
       });
@@ -380,7 +405,7 @@ const RegistrationDetails = ({
 };
 
 // Payments form
-const PaymentDetails = ({ registrationId, handleSubmit }: PaymentProps) => {
+const PaymentDetails = ({ registrationId, token, handleSubmit }: PaymentProps) => {
   const [loading, setLoading] = React.useState(false);
   const [openSnackbar, setOpenSnackbar] = React.useState<ToastType>({
     open: false,
@@ -398,7 +423,8 @@ const PaymentDetails = ({ registrationId, handleSubmit }: PaymentProps) => {
         mode: "cors",
         cache: "no-cache",
         headers: {
-          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json'
         },
         body: JSON.stringify({...values, registrationId}),
       });
