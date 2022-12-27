@@ -1,4 +1,5 @@
 import { Container } from "@mui/material";
+import { GetServerSideProps } from "next";
 import { useRouter } from "next/router";
 import React, { useState } from "react";
 
@@ -8,7 +9,26 @@ import { BASE_URL } from "../../../common/utils/constants";
 import DurationForm from "../../../components/ui/DurationForm/DurationForm";
 import Toast from "../../../components/ui/Toast/Toast";
 
-function AddDuration() {
+export const getServerSideProps: GetServerSideProps<any> = async (context) => {
+  const token = context.req.cookies?.token;
+
+  if (token) {
+    return {
+      props: {
+        token,
+      },
+    };
+  } else {
+    return {
+      redirect: {
+        permanent: false,
+        destination: "/login",
+      },
+    };
+  }
+};
+
+function AddDuration({ token }: { token: string }) {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [openSnackbar, setOpenSnackbar] = useState<ToastType>({
@@ -34,7 +54,8 @@ function AddDuration() {
         mode: "cors",
         cache: "no-cache",
         headers: {
-          "Content-Type": "application/json",
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
         },
         body: JSON.stringify(values),
       });

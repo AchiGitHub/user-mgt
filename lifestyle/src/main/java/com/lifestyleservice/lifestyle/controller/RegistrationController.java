@@ -1,5 +1,6 @@
 package com.lifestyleservice.lifestyle.controller;
 
+import com.lifestyleservice.lifestyle.dto.RegisterUserDto;
 import com.lifestyleservice.lifestyle.dto.RegistrationDto;
 import com.lifestyleservice.lifestyle.entity.Registration;
 import com.lifestyleservice.lifestyle.service.RegistrationService;
@@ -38,12 +39,7 @@ public class RegistrationController {
         TransportDto createdRegistration = registrationService.createRegistration(res);
         log.info("Registration {}", createdRegistration);
 
-        URI location = ServletUriComponentsBuilder
-                .fromCurrentRequest()
-                .path("/{id}")
-                .buildAndExpand(createdRegistration.getResponse())
-                .toUri();
-        return ResponseEntity.created(location).build();
+        return ResponseEntity.ok(createdRegistration.getResponse());
     }
 
     @GetMapping("")
@@ -73,6 +69,21 @@ public class RegistrationController {
             return ResponseEntity.status(res.getError().getStatus()).body(res);
         } else {
             return ResponseEntity.ok(res);
+        }
+    }
+
+    @PostMapping("/new")
+    public ResponseEntity createUserRegistration(@RequestBody RegisterUserDto registerUserDto) {
+        TransportDto res = registrationService.createNewRegistration(registerUserDto);
+        if (res.getError() != null) {
+            return ResponseEntity.status(res.getError().getStatus()).body(res);
+        } else {
+            URI location = ServletUriComponentsBuilder
+                    .fromCurrentRequest()
+                    .path("/{id}")
+                    .buildAndExpand(res.getResponse())
+                    .toUri();
+            return ResponseEntity.created(location).build();
         }
     }
 }

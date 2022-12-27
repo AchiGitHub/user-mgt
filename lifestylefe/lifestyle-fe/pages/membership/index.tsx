@@ -1,6 +1,7 @@
 import { Delete, Edit } from "@mui/icons-material";
 import { Button, Container, IconButton } from "@mui/material";
 import { DataGrid, GridColDef, GridSelectionModel } from "@mui/x-data-grid";
+import { GetServerSideProps } from "next";
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 import { MembershipType } from "../../common/types/Common";
@@ -8,28 +9,41 @@ import { BASE_URL } from "../../common/utils/constants";
 
 interface MembershipTypesProps {
   response: MembershipType[];
+  token: string;
   error: any;
 }
 
-export async function getServerSideProps() {
+export const getServerSideProps: GetServerSideProps<any> = async (context) => {
   let response = {};
   let error = {};
+  const token = context.req.cookies?.token;
   try {
-    const membershipTypes = await fetch(`${BASE_URL}/membership/type`);
+    const membershipTypes = await fetch(`${BASE_URL}/membership/type`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'application/json'
+      },
+    });
     const data = await membershipTypes.json();
     response = data.response;
   } catch (error) {
-    error = "Something went wrong!";
+    return {
+      redirect: {
+        permanent: false,
+        destination: "/login",
+      },
+    }
   }
   return {
     props: {
       response,
+      token,
       error,
     },
   };
 }
 
-function MembershipType({ response, error }: MembershipTypesProps) {
+function MembershipType({ response, token, error }: MembershipTypesProps) {
   const route = useRouter();
   const [membershipTypes, setMembershipTypes] = useState<MembershipType[]>([]);
   const [selectedIds, setSelectedIds] = useState<GridSelectionModel>();
@@ -89,8 +103,9 @@ function MembershipType({ response, error }: MembershipTypesProps) {
           mode: "cors",
           cache: "no-cache",
           headers: {
-            "Content-Type": "application/json",
-          },
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+          }
         });
         return id;
       })

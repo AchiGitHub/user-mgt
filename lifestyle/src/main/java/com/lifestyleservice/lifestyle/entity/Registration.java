@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.UUID;
 
 
@@ -31,7 +32,8 @@ public class Registration extends Auditable<String> {
     @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
     private LocalDateTime endDate;
     @NotNull
-    private UUID[] users;
+    @ElementCollection
+    private List<UUID> users;
     @NotNull
     private Double amount;
     @NotNull

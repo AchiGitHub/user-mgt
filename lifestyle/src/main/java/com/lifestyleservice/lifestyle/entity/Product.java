@@ -1,6 +1,6 @@
 package com.lifestyleservice.lifestyle.entity;
 
-import com.lifestyleservice.lifestyle.enums.PaymentTypes;
+import com.lifestyleservice.lifestyle.enums.ProductType;
 import com.sun.istack.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -11,21 +11,25 @@ import javax.persistence.*;
 import java.util.UUID;
 
 @Entity
-@Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Data
 @Builder
-@Table(name = "payments")
-public class Payments extends Auditable<String> {
+@Table(name = "store")
+public class Product extends Auditable<String> {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID id;
     @NotNull
-    private UUID registrationId;
+    private String productName;
     @NotNull
-    private Double amount;
+    private Integer quantity;
     @NotNull
-    private PaymentTypes paymentType;
+    private Double price;
     @NotNull
-    private String category;
+    private Double sellingPrice;
+    @NotNull
+    private ProductType productType;
+    @NotNull
+    private Integer sold;
 }
