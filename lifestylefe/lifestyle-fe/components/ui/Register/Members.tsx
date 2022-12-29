@@ -37,6 +37,9 @@ const Members = ({
               const nic = `users[${index}].nic`;
               const address = `users[${index}].address`;
               const dob = `users[${index}].dob`;
+              const occupation = `users[${index}].occupation`;
+              const weight = `users[${index}].weight`;
+              const height = `users[${index}].height`;
 
               return (
                 <div key={index}>
@@ -139,9 +142,35 @@ const Members = ({
                           <TextField
                             margin="normal"
                             variant="outlined"
-                            label="NIC"
-                            name={nic}
-                            value={p.nic}
+                            label="Occupation"
+                            name={occupation}
+                            value={p.occupation}
+                            onChange={formikContext.handleChange}
+                            onBlur={formikContext.handleBlur}
+                            fullWidth
+                          />
+                        </Grid>
+                        <Grid item xs={12} sm={6}>
+                          <TextField
+                            type="number"
+                            margin="normal"
+                            variant="outlined"
+                            label="Weight(kg)"
+                            name={weight}
+                            value={p.weight}
+                            onChange={formikContext.handleChange}
+                            onBlur={formikContext.handleBlur}
+                            fullWidth
+                          />
+                        </Grid>
+                        <Grid item xs={12} sm={6}>
+                          <TextField
+                            type="number"
+                            margin="normal"
+                            variant="outlined"
+                            label="height(cm)"
+                            name={height}
+                            value={p.height}
                             onChange={formikContext.handleChange}
                             onBlur={formikContext.handleBlur}
                             fullWidth

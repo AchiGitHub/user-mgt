@@ -53,3 +53,13 @@ export type AutoCompleteProps = {
     id: string;
     label: string;
 }
+
+export type Product = {
+    id?: string,
+    productName: string,
+    quantity: number | string,
+    price: number | string,
+    sellingPrice: number | string,
+    productType: number | string,
+    sold: number | string
+}

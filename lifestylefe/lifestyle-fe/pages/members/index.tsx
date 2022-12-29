@@ -43,7 +43,6 @@ function Members({ members }: MembersProps) {
   const columns: GridColDef[] = [
     { field: "firstName", headerName: "First Name", width: 100, flex: 1 },
     { field: "lastName", headerName: "Last Name", width: 100, flex: 1 },
-    { field: "nic", headerName: "NIC", width: 100, flex: 1 },
     {
       field: "dob",
       headerName: "Date of Birth",
@@ -51,15 +50,17 @@ function Members({ members }: MembersProps) {
       flex: 1,
       renderCell: (dob: any) => (
         <div>{moment(dob.value).format("YYYY-MM-DD")}</div>
-      ),
-    },
-    {
-      field: "address",
-      headerName: "Address",
-      width: 100,
-      flex: 1,
-    },
-    { field: "mobileNumber", headerName: "Mobile Number", width: 100, flex: 1 },
+        ),
+      },
+      {
+        field: "address",
+        headerName: "Address",
+        width: 100,
+        flex: 1,
+      },
+    { field: "occupation", headerName: "Occupation", width: 100, flex: 1 },
+    { field: "weight", headerName: "Weight", width: 100, flex: 1 },
+    { field: "height", headerName: "Height", width: 100, flex: 1 },
     { field: "gender", headerName: "Gender", width: 100, flex: 1 },
   ];
 

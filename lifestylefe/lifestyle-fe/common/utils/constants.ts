@@ -12,9 +12,9 @@ export const BASE_URL = "http://localhost:9002/v1";
 export const SidebarContent: Sidebar[] = [
     { text: 'Members', icon: GroupIcon, route: '/members' },
     { text: 'Register', icon: AppRegistrationIcon, route: '/membership/register' },
-    { text: 'Payments', icon: PaymentIcon, route: '/duration' },
     { text: 'Duration', icon: CalendarMonthIcon, route: '/duration' },
     { text: 'Membership Types', icon: ManageAccountsIcon, route: '/membership' },
+    { text: 'Store', icon: PaymentIcon, route: '/store' },
 ];
 
 export const DurationInitialValues = {
@@ -153,7 +153,10 @@ export const MemberPayload = {
     "nic": "",
     "address": "",
     "mobileNumber": "",
-    "gender": 0
+    "gender": 0,
+    "occupation": "",
+    "weight": 0,
+    "height": 0,
 }
 
 export const RenewValues = {
@@ -168,4 +171,34 @@ export const RenewValues = {
 export const PaymentInitialValues = {
     paymentType: "",
     paymentAmount: ""
+}
+
+export const ProductInitialValues = {
+    productName: "",
+    quantity: "",
+    price: "",
+    sellingPrice: "",
+    productType: "",
+    sold: ""
+}
+
+export const ProductTypes = [
+    {
+        id: 0,
+        label: 'Supplement'
+    },
+    {
+        id: 1,
+        label: 'Beverage'
+    },
+    {
+        id: 2,
+        label: 'Other'
+    },
+];
+
+export const ProductMap: any = {
+    "SUPPLEMENT": 0,
+    "BEVERAGE": 1,
+    "OTHER": 2,
 }
