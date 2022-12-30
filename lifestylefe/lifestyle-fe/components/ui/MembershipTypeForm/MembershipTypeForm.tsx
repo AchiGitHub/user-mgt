@@ -12,7 +12,6 @@ import { useRouter } from "next/router";
 import { MembershipType } from "../../../common/types/Common";
 import { membershiptypeValidation } from "../../../common/utils/validations";
 import { Duration } from "../../../common/types/Durations";
-import { MembershipTypeInitialValues } from "../../../common/utils/constants";
 
 interface MembershipTypeFormProps {
   loading: boolean;

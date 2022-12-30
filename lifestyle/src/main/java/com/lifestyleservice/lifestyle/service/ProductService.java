@@ -12,4 +12,5 @@ public interface ProductService {
     boolean deleteProduct(UUID id);
     TransportDto sellItem(UUID id, Integer qty);
     TransportDto getAllProducts();
+    TransportDto getProduct(UUID id);
 }

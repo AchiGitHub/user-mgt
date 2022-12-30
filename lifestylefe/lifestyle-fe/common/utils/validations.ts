@@ -13,6 +13,18 @@ export const membershiptypeValidation = yup.object({
     durationId: yup.string().required("Duration is required!")
 });
 
+export const productValidation = yup.object({
+    productName: yup.string().required("Product name is required!"),
+    quantity: yup.number().required("Quantity is required!"),
+    price: yup.number().required("Price is required!"),
+    sellingPrice: yup.number().required("Selling price is required!"),
+});
+
+export const sellProductValidation = yup.object({
+    id: yup.string().required("Product is required!"),
+    quantity: yup.number().required("Quantity is required!"),
+});
+
 
 export const getDropdownValues = (arr: any[], labelName: string) => {
     return arr.map((item, idx) => {

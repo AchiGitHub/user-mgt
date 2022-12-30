@@ -35,6 +35,8 @@ public class Member extends Auditable<String> {
     private String mobileNumber;
     private String secondaryNumber;
     private String occupation;
+    private Double weight;
+    private Double height;
     @NotNull
     private Gender gender;
 }

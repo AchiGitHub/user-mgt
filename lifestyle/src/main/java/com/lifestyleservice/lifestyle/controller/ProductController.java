@@ -47,4 +47,16 @@ public class ProductController {
         return ResponseEntity.ok(res.getResponse());
     }
 
+    @GetMapping("/{id}")
+    public ResponseEntity getProduct(@PathVariable UUID id) {
+        TransportDto res = productService.getProduct(id);
+        return ResponseEntity.ok(res.getResponse());
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity deleteProduct(@PathVariable UUID id) {
+        boolean res = productService.deleteProduct(id);
+        return ResponseEntity.ok(res);
+    }
+
 }

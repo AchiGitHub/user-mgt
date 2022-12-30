@@ -52,6 +52,11 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
+    public TransportDto getProduct(UUID id) {
+        return requestHelper.setResponse(productRepository.findById(id));
+    }
+
+    @Override
     public TransportDto editProduct(UUID id, Product product) {
         try {
             Product savedProduct = productRepository.findById(id).get();
@@ -66,6 +71,9 @@ public class ProductServiceImpl implements ProductService {
             }
             if (Objects.nonNull(product.getPrice())) {
                 savedProduct.setPrice(product.getPrice());
+            }
+            if (Objects.nonNull(product.getSold())) {
+                savedProduct.setSold(product.getSold());
             }
             savedProduct.setLastModifiedDate(LocalDateTime.now());
             productRepository.save(savedProduct);
