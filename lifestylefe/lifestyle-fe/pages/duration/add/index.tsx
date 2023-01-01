@@ -54,24 +54,25 @@ function AddDuration({ token }: { token: string }) {
         mode: "cors",
         cache: "no-cache",
         headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json'
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
         },
         body: JSON.stringify(values),
+      }).then((resp) => {
+        if (resp.ok) {
+          setLoading(false);
+          let created: ToastType = {
+            ...openSnackbar,
+            open: true,
+            severity: "success",
+            message: "Duration created successfully!",
+          };
+          setOpenSnackbar(created);
+          router.push("/duration");
+        } else {
+          throw new Error("Something went wrong!");
+        }
       });
-
-      if (resp.ok) {
-        setLoading(false);
-        let created: ToastType = {
-          ...openSnackbar,
-          open: true,
-          severity: "success",
-          message: "Duration created successfully!",
-        };
-        setOpenSnackbar(created);
-        router.push("/duration");
-      }
-      throw new Error("Something went wrong!");
     } catch (error) {
       let created: ToastType = {
         ...openSnackbar,

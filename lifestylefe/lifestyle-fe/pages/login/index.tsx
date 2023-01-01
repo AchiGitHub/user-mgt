@@ -10,26 +10,30 @@ import Container from "@mui/material/Container";
 import { Form, Formik, FormikValues } from "formik";
 import { BASE_URL } from "../../common/utils/constants";
 import { useRouter } from "next/router";
+import Cookie from "js-cookie";
+import { CircularProgress, IconButton } from "@mui/material";
 
 export default function SignIn() {
-
   const router = useRouter();
+  const [loading, setLoading] = React.useState(false);
 
   const handleSubmit = async (values: FormikValues) => {
+    setLoading(true);
     const buffer = Buffer.from(`${values.username}:${values.password}`);
     const encodedString = buffer.toString("base64");
     const resp = await fetch(`${BASE_URL}/auth/token`, {
-      method: "POST",    
+      method: "POST",
       headers: new Headers({
         Authorization: `Basic ${encodedString}`,
-        'Content-Type': 'application/json'
+        "Content-Type": "application/json",
       }),
-      credentials: 'include'
+      credentials: "include",
     })
-      .then((response) => { 
-        if (response.status === 200) {
-          router.push("/");
-        }
+      .then((res) => res.json())
+      .then((response) => {
+        Cookie.set("token", response.response);
+        router.push("/");
+        setLoading(false);
       });
   };
 
@@ -81,14 +85,22 @@ export default function SignIn() {
                   onChange={handleChange}
                   autoComplete="current-password"
                 />
-                <Button
-                  type="submit"
-                  fullWidth
-                  variant="contained"
-                  sx={{ mt: 3, mb: 2 }}
-                >
-                  Sign In
-                </Button>
+                {loading ? (
+                  <Box sx={{ display: "flex", justifyContent: "center" }}>
+                    <IconButton>
+                      <CircularProgress />
+                    </IconButton>
+                  </Box>
+                ) : (
+                  <Button
+                    type="submit"
+                    fullWidth
+                    variant="contained"
+                    sx={{ mt: 3, mb: 2 }}
+                  >
+                    Sign In
+                  </Button>
+                )}
               </Form>
             )}
           </Formik>

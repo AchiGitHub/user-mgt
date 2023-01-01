@@ -31,22 +31,24 @@ export const getServerSideProps: GetServerSideProps<any> = async (context) => {
     props: {
       members: response,
       error,
+      token
     },
   };
 };
 
 interface MembersProps {
   members: Member[];
+  token: string
 }
 
-function Members({ members }: MembersProps) {
+function Members({ members, token }: MembersProps) {
   const columns: GridColDef[] = [
-    { field: "firstName", headerName: "First Name", width: 100, flex: 1 },
-    { field: "lastName", headerName: "Last Name", width: 100, flex: 1 },
+    { field: "firstName", headerName: "First Name", minWidth: 150, flex: 1 },
+    { field: "lastName", headerName: "Last Name", minWidth: 150, flex: 1 },
     {
       field: "dob",
       headerName: "Date of Birth",
-      width: 100,
+      minWidth: 150,
       flex: 1,
       renderCell: (dob: any) => (
         <div>{moment(dob.value).format("YYYY-MM-DD")}</div>
@@ -55,13 +57,13 @@ function Members({ members }: MembersProps) {
       {
         field: "address",
         headerName: "Address",
-        width: 100,
+        minWidth: 150,
         flex: 1,
       },
-    { field: "occupation", headerName: "Occupation", width: 100, flex: 1 },
-    { field: "weight", headerName: "Weight", width: 100, flex: 1 },
-    { field: "height", headerName: "Height", width: 100, flex: 1 },
-    { field: "gender", headerName: "Gender", width: 100, flex: 1 },
+    { field: "occupation", headerName: "Occupation", minWidth: 150, flex: 1 },
+    { field: "weight", headerName: "Weight", minWidth: 150, flex: 1 },
+    { field: "height", headerName: "Height", minWidth: 150, flex: 1 },
+    // { field: "gender", headerName: "Gender", width: 100, flex: 1 },
   ];
 
   return (

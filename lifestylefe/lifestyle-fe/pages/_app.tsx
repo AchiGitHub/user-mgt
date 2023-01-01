@@ -19,6 +19,8 @@ import {
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterMoment } from "@mui/x-date-pickers/AdapterMoment";
 import { useRouter } from "next/router";
+import LogoutIcon from "@mui/icons-material/Logout";
+import Cookie from "js-cookie";
 
 const drawerWidth = 240;
 
@@ -41,14 +43,19 @@ export default function App({ Component, pageProps }: AppProps) {
   });
 
   return (
-    <ThemeProvider theme={theme}>
+    <ThemeProvider theme={theme}>      
       {router.pathname === "/login" ? (
         <Box
-        component="main"
-        sx={{ flexGrow: 1, bgcolor: "background.default", p: 3, height: '100vh' }}
-      >
-        <Component {...pageProps} />
-      </Box>
+          component="main"
+          sx={{
+            flexGrow: 1,
+            bgcolor: "background.default",
+            p: 3,
+            height: "100vh",
+          }}
+        >
+          <Component {...pageProps} />
+        </Box>
       ) : (
         <LocalizationProvider dateAdapter={AdapterMoment}>
           <Box sx={{ display: "flex", height: "100vh" }}>
@@ -59,7 +66,7 @@ export default function App({ Component, pageProps }: AppProps) {
                 ml: { sm: `${drawerWidth}px` },
               }}
             >
-              <Toolbar>
+              <Toolbar className="toolbar" sx={{ display: 'flex', justifyContent: 'space-between' }}>
                 <IconButton
                   color="inherit"
                   aria-label="open drawer"
@@ -69,9 +76,15 @@ export default function App({ Component, pageProps }: AppProps) {
                 >
                   <MenuIcon />
                 </IconButton>
-                {/* <Typography variant="h6" noWrap component="div">
-                Dashboard
-              </Typography> */}
+                <IconButton
+                  onClick={() => {
+                    Cookie.remove("token"), router.push("/login");
+                  }}
+                  sx={{ color: '#fff' }}
+                >
+                  <LogoutIcon />
+                  <Typography fontSize={14} fontWeight={600} ml={1}>Logout</Typography>
+                </IconButton>
               </Toolbar>
             </AppBar>
             <Box
