@@ -1,15 +1,20 @@
 package com.lifestyleservice.lifestyle.service.impl;
 
 import com.lifestyleservice.lifestyle.entity.Member;
+import com.lifestyleservice.lifestyle.enums.Gender;
 import com.lifestyleservice.lifestyle.repository.MemberRepository;
 import com.lifestyleservice.lifestyle.service.MemberService;
 import com.lifestyleservice.lifestyle.util.RequestHelper;
 import com.lifestyleservice.lifestyle.util.TransportDto;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
