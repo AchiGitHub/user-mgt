@@ -21,6 +21,7 @@ import { AdapterMoment } from "@mui/x-date-pickers/AdapterMoment";
 import { useRouter } from "next/router";
 import LogoutIcon from "@mui/icons-material/Logout";
 import Cookie from "js-cookie";
+import Head from "next/head";
 
 const drawerWidth = 240;
 
@@ -43,7 +44,10 @@ export default function App({ Component, pageProps }: AppProps) {
   });
 
   return (
-    <ThemeProvider theme={theme}>      
+    <ThemeProvider theme={theme}>
+      <Head>
+        <title>Lifestyle Fitness Studio</title>
+      </Head> 
       {router.pathname === "/login" ? (
         <Box
           component="main"

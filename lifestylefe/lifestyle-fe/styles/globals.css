@@ -27,7 +27,7 @@ a {
 
 @media only screen and (min-width: 600px) {
   .toolbar {
-    display: flex;
-    justify-content: flex-end;
+    display: flex !important;
+    justify-content: flex-end !important;
   }
 }

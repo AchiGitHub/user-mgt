@@ -76,11 +76,11 @@ function Registrations({ registrations, token }: RegisterProps) {
           Create Registration
         </Button>
       </div>
-      <div style={{ height: 400, width: "100%" }}>
+      <div style={{ height: 550, width: "100%" }}>
         <DataGrid
           columns={columns}
           rows={registrations}
-          pageSize={5}
+          pageSize={100}
           rowsPerPageOptions={[5]}
           sx={{ overflowX: "scroll" }}
         />
