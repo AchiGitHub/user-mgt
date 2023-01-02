@@ -7,7 +7,8 @@ import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 import { Sidebar } from '../types/Sidebar';
 import moment from 'moment';
 
-export const BASE_URL = "http://localhost:9002/v1";
+// export const BASE_URL = "http://localhost:8080/v1";
+export const BASE_URL = "https://lifestyle-service.fly.dev/v1";
 
 export const SidebarContent: Sidebar[] = [
     { text: 'Members', icon: GroupIcon, route: '/members' },

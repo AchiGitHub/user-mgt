@@ -56,15 +56,15 @@ function MembershipType({ response, token, error }: MembershipTypesProps) {
     {
       field: "membershipName",
       headerName: "Membership Name",
-      width: 100,
+      minWidth: 150,
       flex: 2,
     },
-    { field: "numberOfMembers", headerName: "Members", width: 100, flex: 2 },
-    { field: "price", headerName: "Price(Rs.)", width: 100, flex: 2, valueFormatter: (params) => params.value.toFixed(2) },
+    { field: "numberOfMembers", headerName: "Members", minWidth: 150, flex: 2 },
+    { field: "price", headerName: "Price(Rs.)", minWidth: 150, flex: 2, valueFormatter: (params) => params.value.toFixed(2) },
     {
       field: "duration",
       headerName: "Duration",
-      width: 100,
+      minWidth: 150,
       flex: 2,
       valueGetter: (params) => {
         if (params.row.duration) {
@@ -75,7 +75,7 @@ function MembershipType({ response, token, error }: MembershipTypesProps) {
     },
     {
       field: "delete",
-      width: 75,
+      minWidth: 75,
       sortable: false,
       disableColumnMenu: true,
       renderHeader: () => {

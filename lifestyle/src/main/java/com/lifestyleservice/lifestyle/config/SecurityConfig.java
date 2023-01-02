@@ -66,7 +66,7 @@ public class SecurityConfig {
     @Bean
     CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration corsConfiguration = new CorsConfiguration();
-        corsConfiguration.setAllowedOrigins(Arrays.asList("http://localhost:3000/"));
+        corsConfiguration.setAllowedOrigins(Arrays.asList("http://localhost:3000/", "https://lifestyle-fitness.fly.dev/"));
         corsConfiguration.setAllowedMethods(Arrays.asList("GET", "POST", "DELETE", "PUT"));
         corsConfiguration.setAllowedHeaders(List.of("Authorization", "Content-Type"));
         corsConfiguration.setAllowCredentials(true);
@@ -78,8 +78,8 @@ public class SecurityConfig {
     @Bean
     public InMemoryUserDetailsManager users() {
         return new InMemoryUserDetailsManager(
-                User.withUsername("sanjeewa")
-                        .password("{noop}password")
+                User.withUsername("sanjeewx")
+                        .password("{noop}ducati848")
                         .authorities("read")
                         .build()
         );

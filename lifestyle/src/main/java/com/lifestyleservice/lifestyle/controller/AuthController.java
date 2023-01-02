@@ -39,13 +39,14 @@ public class AuthController {
 
         ResponseCookie cookie = ResponseCookie.from("token", token)
                 .httpOnly(true)
+                .sameSite("None")
                 .secure(true)
+                .maxAge(60000)
                 .path("/")
                 .build();
 
         return ResponseEntity
                 .ok()
-                .header(HttpHeaders.SET_COOKIE, cookie.toString())
                 .body(res);
     }
 
