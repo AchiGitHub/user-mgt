@@ -5,6 +5,8 @@ import com.lifestyleservice.lifestyle.dto.RegistrationDto;
 import com.lifestyleservice.lifestyle.entity.Registration;
 import com.lifestyleservice.lifestyle.util.TransportDto;
 
+import java.time.LocalDateTime;
+import java.util.Map;
 import java.util.UUID;
 
 public interface RegistrationService {
@@ -14,4 +16,5 @@ public interface RegistrationService {
     boolean deleteRegistration(UUID id);
     TransportDto updateRegistration(UUID id, Registration register);
     TransportDto createNewRegistration(RegisterUserDto registrationDto);
+    TransportDto filterRegistrations(String date);
 }

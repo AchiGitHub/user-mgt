@@ -3,6 +3,7 @@ import AppRegistrationIcon from '@mui/icons-material/AppRegistration';
 import ManageAccountsIcon from '@mui/icons-material/ManageAccounts';
 import PaymentIcon from '@mui/icons-material/Payment';
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
+import CurrencyExchangeIcon from '@mui/icons-material/CurrencyExchange';
 
 import { Sidebar } from '../types/Sidebar';
 import moment from 'moment';
@@ -12,7 +13,8 @@ export const BASE_URL = "https://lifestyle-service.fly.dev/v1";
 
 export const SidebarContent: Sidebar[] = [
     { text: 'Members', icon: GroupIcon, route: '/members' },
-    { text: 'Register', icon: AppRegistrationIcon, route: '/membership/register' },
+    { text: 'Registrations', icon: AppRegistrationIcon, route: '/membership/register' },
+    { text: 'Membership Renewals', icon: CurrencyExchangeIcon, route: '/renewals' },
     { text: 'Duration', icon: CalendarMonthIcon, route: '/duration' },
     { text: 'Membership Types', icon: ManageAccountsIcon, route: '/membership' },
     { text: 'Store', icon: PaymentIcon, route: '/store' },

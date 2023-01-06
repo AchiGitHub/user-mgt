@@ -42,3 +42,29 @@ export const getUsersArray = (num: number) => {
     }
     return userArray;
 }
+
+export const getPath = (pathname: string) => {
+    if (pathname === '/renewals') {
+        return 'Membership Renewals';
+    } else if (pathname === '/members') {
+        return 'Members';
+    } else if (pathname === '/membership/register') {
+        return 'Registrations';
+    } else if (pathname === '/duration') {
+        return 'Durations';
+    } else if (pathname === '/membership') {
+        return 'Membership Types';
+    } else if (pathname === '/store') {
+        return 'Store';
+    } else if (pathname === '/membership/add') {
+        return 'Add Membership Type';
+    } else if (pathname === '/membership/register/new') {
+        return 'Add New Membership';
+    } else if (pathname === '/membership/register/renew') {
+        return 'Renew Membership';
+    } else if (pathname === '/duration/add') {
+        return 'Add Duration';
+    } else if (pathname === '/store/add') {
+        return 'Add Product';
+    }
+}

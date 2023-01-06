@@ -86,4 +86,18 @@ public class RegistrationController {
             return ResponseEntity.created(location).build();
         }
     }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity deleteRegistration(@PathVariable UUID id) {
+        boolean res = registrationService.deleteRegistration(id);
+        return ResponseEntity.ok(res);
+    }
+
+    @GetMapping("/renewals")
+    public ResponseEntity filterRegistrations(
+            @RequestParam("date") String dateTime
+    ) {
+        TransportDto res = registrationService.filterRegistrations(dateTime);
+        return ResponseEntity.ok(res);
+    }
 }

@@ -22,10 +22,11 @@ import { useRouter } from "next/router";
 import LogoutIcon from "@mui/icons-material/Logout";
 import Cookie from "js-cookie";
 import Head from "next/head";
+import { getPath } from "../common/utils/validations";
 
 const drawerWidth = 240;
 
-export default function App({ Component, pageProps }: AppProps) {
+export default function App({ Component, pageProps, router: nextRouter }: AppProps) {
   const router = useRouter();
   const [drawerVisibility, setDrawerVisibility] = useState(false);
   const handleDrawerVisibility = () => {
@@ -70,7 +71,7 @@ export default function App({ Component, pageProps }: AppProps) {
                 ml: { sm: `${drawerWidth}px` },
               }}
             >
-              <Toolbar className="toolbar" sx={{ display: 'flex', justifyContent: 'space-between' }}>
+              <Toolbar sx={{ display: 'flex', justifyContent: 'space-between' }}>
                 <IconButton
                   color="inherit"
                   aria-label="open drawer"
@@ -80,6 +81,7 @@ export default function App({ Component, pageProps }: AppProps) {
                 >
                   <MenuIcon />
                 </IconButton>
+                <Typography fontSize="22px" fontWeight="600">{getPath(nextRouter.pathname)}</Typography>
                 <IconButton
                   onClick={() => {
                     Cookie.remove("token"), router.push("/login");
