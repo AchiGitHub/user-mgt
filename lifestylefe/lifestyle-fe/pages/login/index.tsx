@@ -12,6 +12,7 @@ import { BASE_URL } from "../../common/utils/constants";
 import { useRouter } from "next/router";
 import Cookie from "js-cookie";
 import { CircularProgress, IconButton } from "@mui/material";
+import Image from "next/image";
 
 export default function SignIn() {
   const router = useRouter();
@@ -48,10 +49,20 @@ export default function SignIn() {
           alignItems: "center",
         }}
       >
-        <Avatar sx={{ m: 1, bgcolor: "secondary.main" }}>
-          <LockOutlinedIcon />
-        </Avatar>
-        <Typography component="h1" variant="h5" sx={{ color: "#000" }}>
+        <Box
+          sx={{
+            borderRadius: "10px",
+          }}
+        >
+          <Image
+            width={400}
+            height={170}
+            src={require("../../public/logo.jpeg")}
+            alt="system logo"
+            style={{ borderRadius: '5px' }}
+          />
+        </Box>
+        <Typography component="h1" variant="h5" sx={{ color: "#000" }} mt={2}>
           Sign in
         </Typography>
         <Box>

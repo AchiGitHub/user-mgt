@@ -2,7 +2,7 @@ import { Button, Container } from "@mui/material";
 import { useRouter } from "next/router";
 import React from "react";
 import { BASE_URL } from "../../../common/utils/constants";
-import { RegisterTypes } from "../../../common/types/Common";
+import { Member, RegisterTypes } from "../../../common/types/Common";
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
 import moment from "moment";
 import { GetServerSideProps } from "next";
@@ -15,7 +15,7 @@ export const getServerSideProps: GetServerSideProps<any> = async (context) => {
     const resp = await fetch(`${BASE_URL}/registration`, {
       headers: {
         Authorization: `Bearer ${token}`,
-        'Content-Type': 'application/json'
+        "Content-Type": "application/json",
       },
     });
     const members = await resp.json();
@@ -32,10 +32,10 @@ export const getServerSideProps: GetServerSideProps<any> = async (context) => {
     props: {
       registrations: response,
       error,
-      token
+      token,
     },
   };
-}
+};
 
 interface RegisterProps {
   registrations: RegisterTypes[];
@@ -46,21 +46,41 @@ function Registrations({ registrations, token }: RegisterProps) {
   const route = useRouter();
 
   const columns: GridColDef[] = [
-    { field: "name", headerName: "Registration Name", minWidth: 200 },
-    { field: "membershipType", headerName: "Membership Type", minWidth: 200, renderCell: ({value}) => <div>{value.membershipName}</div> },
+    {
+      field: "users",
+      headerName: "Member(s)",
+      minWidth: 350,
+      valueGetter: ({ row }) => {
+        let memberNames: string[] = [];
+        row.users.forEach((member: Member) => {
+          memberNames.push(`${member.firstName} ${member.lastName}`);
+        });
+        return memberNames.join(", ");
+      },
+    },
+    {
+      field: "membershipType",
+      headerName: "Membership Type",
+      minWidth: 200,
+      renderCell: ({ value }) => <div>{value.membershipName}</div>,
+    },
     {
       field: "startDate",
       headerName: "Start Date",
       minWidth: 150,
-      renderCell: (startDate: any) => <div>{moment(startDate.value).format("YYYY-MM-DD")}</div>,
+      renderCell: (startDate: any) => (
+        <div>{moment(startDate.value).format("YYYY-MM-DD")}</div>
+      ),
     },
     {
       field: "endDate",
       headerName: "End Date",
       minWidth: 150,
-      renderCell: (endDate: any) => <div>{moment(endDate.value).format("YYYY-MM-DD")}</div>,
+      renderCell: (endDate: any) => (
+        <div>{moment(endDate.value).format("YYYY-MM-DD")}</div>
+      ),
     },
-    { field: "amount", headerName: "Amount", minWidth: 150 }
+    { field: "amount", headerName: "Amount", minWidth: 150 },
   ];
 
   return (
@@ -72,15 +92,18 @@ function Registrations({ registrations, token }: RegisterProps) {
           margin: "0 0 10px 0",
         }}
       >
-        <Button variant="contained" onClick={() => route.push("/membership/register/type")}>
+        <Button
+          variant="contained"
+          onClick={() => route.push("/membership/register/type")}
+        >
           Create Registration
         </Button>
       </div>
-      <div style={{ height: 400, width: "100%" }}>
+      <div style={{ height: 550, width: "100%" }}>
         <DataGrid
           columns={columns}
           rows={registrations}
-          pageSize={5}
+          pageSize={100}
           rowsPerPageOptions={[5]}
           sx={{ overflowX: "scroll" }}
         />

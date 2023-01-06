@@ -24,10 +24,3 @@ a {
     background: black;
   }
 }
-
-@media only screen and (min-width: 600px) {
-  .toolbar {
-    display: flex;
-    justify-content: flex-end;
-  }
-}

@@ -23,6 +23,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 @Service
@@ -178,6 +179,37 @@ public class RegisterServiceImpl implements RegistrationService {
             return requestHelper.setResponse(registerUserDto);
         } catch(Exception e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Registration failed!");
+        }
+    }
+
+    @Override
+    public TransportDto filterRegistrations(String date) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+        LocalDateTime endDate = LocalDateTime.parse(date, formatter);
+        List<Registration> expiringRegistrations = registrationRepository.findAllExpireByEndDate(endDate.getYear(), endDate.getMonthValue());
+        List<GetRegistrationsDto> allRegistrationsDto = new ArrayList<>();
+        if (expiringRegistrations != null) {
+            List<AllRegistrationsDto> regs = new ArrayList<>();
+            expiringRegistrations.forEach(reg -> {
+                AllRegistrationsDto newObj = new AllRegistrationsDto();
+                newObj.setId(reg.getId());
+                Optional<MembershipType> mt = membershipRepository.findById(reg.getMembershipType());
+                List<Optional<Member>> members = new ArrayList<>();
+                reg.getUsers().forEach(member -> {
+                    Optional<Member> getMem = memberRepository.findById(member);
+                    members.add(getMem);
+                });
+                newObj.setAmount(reg.getAmount());
+                newObj.setName(reg.getName());
+                newObj.setEndDate(reg.getEndDate());
+                newObj.setStartDate(reg.getStartDate());
+                newObj.setUsers(members);
+                newObj.setMembershipType(mt);
+                regs.add(newObj);
+            });
+            return requestHelper.setResponse(regs);
+        } else {
+            return requestHelper.setError(HttpStatus.NOT_FOUND, "No records found!");
         }
     }
 }

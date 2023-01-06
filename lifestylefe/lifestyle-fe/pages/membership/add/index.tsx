@@ -93,8 +93,9 @@ function AddMembershipType({ durations, token }: AddMembershipTypeProps) {
         };
         setOpenSnackbar(created);
         router.push("/membership");
+      } else {
+        throw new Error("Something went wrong!");
       }
-      throw new Error("Something went wrong!");
     } catch (error) {
       let created: ToastType = {
         ...openSnackbar,

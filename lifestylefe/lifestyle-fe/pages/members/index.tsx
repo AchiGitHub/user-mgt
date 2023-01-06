@@ -14,7 +14,7 @@ export const getServerSideProps: GetServerSideProps<any> = async (context) => {
     const resp = await fetch(`${BASE_URL}/member`, {
       headers: {
         Authorization: `Bearer ${token}`,
-        'Content-Type': 'application/json'
+        "Content-Type": "application/json",
       },
     });
     const members = await resp.json();
@@ -31,14 +31,14 @@ export const getServerSideProps: GetServerSideProps<any> = async (context) => {
     props: {
       members: response,
       error,
-      token
+      token,
     },
   };
 };
 
 interface MembersProps {
   members: Member[];
-  token: string
+  token: string;
 }
 
 function Members({ members, token }: MembersProps) {
@@ -46,33 +46,39 @@ function Members({ members, token }: MembersProps) {
     { field: "firstName", headerName: "First Name", minWidth: 150, flex: 1 },
     { field: "lastName", headerName: "Last Name", minWidth: 150, flex: 1 },
     {
+      field: "mobileNumber",
+      headerName: "Mobile Number",
+      minWidth: 150,
+      flex: 1,
+    },
+    {
+      field: "address",
+      headerName: "Address",
+      minWidth: 150,
+      flex: 1,
+    },
+    { field: "occupation", headerName: "Occupation", minWidth: 150, flex: 1 },
+    { field: "weight", headerName: "Weight", minWidth: 150, flex: 1 },
+    { field: "height", headerName: "Height", minWidth: 150, flex: 1 },
+    {
       field: "dob",
       headerName: "Date of Birth",
       minWidth: 150,
       flex: 1,
       renderCell: (dob: any) => (
         <div>{moment(dob.value).format("YYYY-MM-DD")}</div>
-        ),
-      },
-      {
-        field: "address",
-        headerName: "Address",
-        minWidth: 150,
-        flex: 1,
-      },
-    { field: "occupation", headerName: "Occupation", minWidth: 150, flex: 1 },
-    { field: "weight", headerName: "Weight", minWidth: 150, flex: 1 },
-    { field: "height", headerName: "Height", minWidth: 150, flex: 1 },
+      ),
+    },
     // { field: "gender", headerName: "Gender", width: 100, flex: 1 },
   ];
 
   return (
     <Container>
-      <div style={{ height: 500, width: "100%" }}>
+      <div style={{ height: 550, width: "100%" }}>
         <DataGrid
           columns={columns}
           rows={members}
-          pageSize={20}
+          pageSize={100}
           rowsPerPageOptions={[5]}
         />
       </div>
