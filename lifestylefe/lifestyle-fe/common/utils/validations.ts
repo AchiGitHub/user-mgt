@@ -20,6 +20,11 @@ export const productValidation = yup.object({
     sellingPrice: yup.number().required("Selling price is required!"),
 });
 
+export const memberValidation = yup.object({
+    firstName: yup.string().required("First name is required!"),
+    lastName: yup.string().required("Last name is required!"),
+});
+
 export const sellProductValidation = yup.object({
     id: yup.string().required("Product is required!"),
     quantity: yup.number().required("Quantity is required!"),

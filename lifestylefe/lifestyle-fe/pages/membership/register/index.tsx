@@ -62,7 +62,9 @@ function Registrations({ registrations, token }: RegisterProps) {
       field: "membershipType",
       headerName: "Membership Type",
       minWidth: 200,
-      renderCell: ({ value }) => <div>{value.membershipName}</div>,
+      valueGetter: (params) => {
+        return params.row.membershipType.membershipName;
+      },
     },
     {
       field: "startDate",

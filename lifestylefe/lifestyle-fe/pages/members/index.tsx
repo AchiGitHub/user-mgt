@@ -1,7 +1,10 @@
+import { Edit } from "@mui/icons-material";
+import { IconButton } from "@mui/material";
 import { Container } from "@mui/system";
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
 import moment from "moment";
 import { GetServerSideProps } from "next";
+import { useRouter } from "next/router";
 import React from "react";
 import { Member } from "../../common/types/Common";
 import { BASE_URL } from "../../common/utils/constants";
@@ -42,6 +45,7 @@ interface MembersProps {
 }
 
 function Members({ members, token }: MembersProps) {
+  const route = useRouter();
   const columns: GridColDef[] = [
     { field: "firstName", headerName: "First Name", minWidth: 150, flex: 1 },
     { field: "lastName", headerName: "Last Name", minWidth: 150, flex: 1 },
@@ -69,7 +73,22 @@ function Members({ members, token }: MembersProps) {
         <div>{moment(dob.value).format("YYYY-MM-DD")}</div>
       ),
     },
-    // { field: "gender", headerName: "Gender", width: 100, flex: 1 },
+    {
+      field: "delete",
+      minWidth: 75,
+      sortable: false,
+      disableColumnMenu: true,
+      headerName: "",
+      renderCell: (params) => {
+        return (
+          <IconButton
+            onClick={() => route.push(`/members/edit/${params.row.id}`)}
+          >
+            <Edit />
+          </IconButton>
+        );
+      },
+    },
   ];
 
   return (
