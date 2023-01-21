@@ -98,11 +98,12 @@ public class ProductServiceImpl implements ProductService {
         try {
             Product savedProduct = productRepository.findById(id).get();
             savedProduct.setSold(savedProduct.getSold() + qty);
+            savedProduct.setQuantity(savedProduct.getQuantity() - qty);
             productRepository.save(savedProduct);
 
             // Create payment record
             Payments payment = new Payments();
-            payment.setAmount(savedProduct.getPrice());
+            payment.setAmount(savedProduct.getPrice() * qty);
             payment.setCategory(savedProduct.getProductType().toString());
             payment.setRegistrationId(UUID.fromString("00000000-0000-0000-0000-000000000000"));
             payment.setPaymentType(PaymentTypes.CASH);

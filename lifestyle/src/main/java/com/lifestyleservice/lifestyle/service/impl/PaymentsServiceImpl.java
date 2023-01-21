@@ -45,4 +45,10 @@ public class PaymentsServiceImpl implements PaymentsService {
         List<Payments> records = paymentsRepository.findAllByRegistrationId(id);
         return requestHelper.setResponse(records);
     }
+
+    @Override
+    public TransportDto updatePayment(UUID id, Payments payments) {
+        Object payment = paymentsRepository.save(payments);
+        return requestHelper.setResponse(payment);
+    }
 }

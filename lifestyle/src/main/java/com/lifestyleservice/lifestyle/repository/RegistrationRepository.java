@@ -6,7 +6,6 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
-import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.UUID;
 
@@ -15,4 +14,9 @@ public interface RegistrationRepository extends JpaRepository<Registration, UUID
 
     @Query("select r from Registration r where year(r.endDate) = ?1 and month(r.endDate) = ?2")
     List<Registration> findAllExpireByEndDate(Integer year, Integer month);
+
+    List<Registration> findByStartDateBetween(LocalDateTime from, LocalDateTime to);
+
+    @Query("select r.membershipType, COUNT(r.membershipType) from Registration r where r.startDate BETWEEN ?1 AND ?2 GROUP BY r.membershipType")
+    List<String[]> findAllByMembershipType(LocalDateTime from, LocalDateTime to);
 }

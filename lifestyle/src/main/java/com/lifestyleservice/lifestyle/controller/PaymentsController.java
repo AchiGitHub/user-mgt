@@ -1,5 +1,6 @@
 package com.lifestyleservice.lifestyle.controller;
 
+import com.lifestyleservice.lifestyle.dto.PaymentDto;
 import com.lifestyleservice.lifestyle.entity.Payments;
 import com.lifestyleservice.lifestyle.service.PaymentsService;
 import com.lifestyleservice.lifestyle.util.TransportDto;
@@ -48,6 +49,12 @@ public class PaymentsController {
     @GetMapping("/{id}")
     public ResponseEntity getPaymentByRegistrationId(@PathVariable UUID id) {
         TransportDto payment = paymentsService.getPaymentByRegistrationId(id);
+        return ResponseEntity.ok(payment);
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity updatePaymentByRegistrationId(@PathVariable UUID id, @RequestBody Payments payments) {
+        TransportDto payment = paymentsService.updatePayment(id, payments);
         return ResponseEntity.ok(payment);
     }
 }

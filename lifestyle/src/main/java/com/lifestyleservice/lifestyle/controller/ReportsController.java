@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -21,8 +22,8 @@ public class ReportsController {
     }
 
     @GetMapping("")
-    public ResponseEntity<TransportDto> getReport() {
-        TransportDto res = reportingService.getReport();
+    public ResponseEntity<TransportDto> getReport(@RequestParam String startDate, @RequestParam String endDate) {
+        TransportDto res = reportingService.getReport(startDate, endDate);
         return ResponseEntity.ok(res);
     }
 

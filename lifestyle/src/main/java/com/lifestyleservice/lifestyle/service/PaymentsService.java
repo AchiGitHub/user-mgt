@@ -9,4 +9,5 @@ public interface PaymentsService {
     TransportDto createPayment(Payments payment);
     TransportDto getAllPayments();
     TransportDto getPaymentByRegistrationId(UUID id);
+    TransportDto updatePayment(UUID id, Payments payments);
 }
