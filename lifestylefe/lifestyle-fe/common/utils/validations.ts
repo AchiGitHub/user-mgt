@@ -71,5 +71,7 @@ export const getPath = (pathname: string) => {
         return 'Add Duration';
     } else if (pathname === '/store/add') {
         return 'Add Product';
+    } else if (pathname === '/home') {
+        return 'Dashboard';
     }
 }

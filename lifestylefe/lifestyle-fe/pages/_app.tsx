@@ -23,6 +23,8 @@ import LogoutIcon from "@mui/icons-material/Logout";
 import Cookie from "js-cookie";
 import Head from "next/head";
 import { getPath } from "../common/utils/validations";
+import { useLoading } from "common/hooks/loading";
+import Loader from "components/common/Loading";
 
 const drawerWidth = 240;
 
@@ -33,6 +35,8 @@ export default function App({ Component, pageProps, router: nextRouter }: AppPro
     setDrawerVisibility(!drawerVisibility);
   };
 
+  const loading = useLoading();
+  
   const theme = createTheme({
     palette: {
       primary: {
@@ -49,7 +53,8 @@ export default function App({ Component, pageProps, router: nextRouter }: AppPro
       <Head>
         <title>Lifestyle Fitness Studio</title>
       </Head> 
-      {router.pathname === "/login" ? (
+      {router.pathname === "/login" ? 
+        loading ? <Box display='flex' justifyContent='center' alignItems='center' height='calc(100vh - 70px)'><Loader /></Box> :
         <Box
           component="main"
           sx={{
@@ -61,7 +66,7 @@ export default function App({ Component, pageProps, router: nextRouter }: AppPro
         >
           <Component {...pageProps} />
         </Box>
-      ) : (
+       : (
         <LocalizationProvider dateAdapter={AdapterMoment}>
           <Box sx={{ display: "flex", height: "100vh" }}>
             <AppBar
@@ -108,7 +113,7 @@ export default function App({ Component, pageProps, router: nextRouter }: AppPro
               sx={{ flexGrow: 1, bgcolor: "background.default", p: 3 }}
             >
               <Toolbar />
-              <Component {...pageProps} />
+              {loading ? <Box display='flex' justifyContent='center' alignItems='center' height='calc(100vh - 70px)'><Loader /></Box> : <Component {...pageProps} />}
             </Box>
           </Box>
         </LocalizationProvider>

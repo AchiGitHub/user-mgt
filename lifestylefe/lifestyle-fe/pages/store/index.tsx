@@ -58,15 +58,6 @@ function Store({ products, token }: { products: Product[], token: string }) {
     { field: "price", headerName: "Price", minWidth: 90, flex: 2 },
     { field: "sellingPrice", headerName: "Selling Price", minWidth: 150, flex: 2 },
     { field: "quantity", headerName: "Initial Quantity", minWidth: 150, flex: 2 },
-    { 
-      field: "remainingQty", 
-      headerName: "Remaining Quantity", 
-      minWidth: 150, 
-      flex: 2,
-      valueGetter: ({ row }) => {
-        return row.quantity - row.sold
-      }
-    },
     { field: "sold", headerName: "Sold", minWidth: 150, flex: 2 },
     { field: "productType", headerName: "ProductType", minWidth: 150, flex: 2 },
     {

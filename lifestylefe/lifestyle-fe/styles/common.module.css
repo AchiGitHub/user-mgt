@@ -44,4 +44,7 @@
     .formLabel {
         margin-bottom: 10px;
     }
+    .filter-dates {
+        flex-direction: column;
+    }
 }

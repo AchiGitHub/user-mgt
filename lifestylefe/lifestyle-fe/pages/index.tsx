@@ -13,7 +13,7 @@ export const getServerSideProps: GetServerSideProps<any> = async (context) => {
     return {
       redirect: {
         permanent: false,
-        destination: "/membership/register",
+        destination: "/home",
       },
     };
   }

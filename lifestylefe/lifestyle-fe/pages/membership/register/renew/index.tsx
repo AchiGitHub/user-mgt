@@ -416,6 +416,10 @@ const PaymentDetails = ({ registrationId, token, handleSubmit }: PaymentProps) =
   const { paymentType, paymentAmount } = formField;
 
   const submit = async (values: FormikValues) => {
+    let payload = {
+      ...values,
+      amount: values.paymentAmount
+    }
     setLoading(true);
     try {
       const resp = await fetch(`${BASE_URL}/payment`, {
@@ -426,7 +430,7 @@ const PaymentDetails = ({ registrationId, token, handleSubmit }: PaymentProps) =
           Authorization: `Bearer ${token}`,
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify({...values, registrationId}),
+        body: JSON.stringify({...payload, registrationId}),
       });
 
       if (resp.ok) {

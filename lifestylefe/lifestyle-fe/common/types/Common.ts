@@ -63,3 +63,14 @@ export type Product = {
     productType: number | string,
     sold: number | string
 }
+
+export type Report = {
+    numberOfRegistrations: number;
+    expiringRegistrations: number;
+    totalMembershipPayments: number;
+    totalBeverageSales: number;
+    membershipSummary: {
+        membershipType: MembershipType;
+        count: number;
+    }[];
+}
