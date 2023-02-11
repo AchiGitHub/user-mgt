@@ -307,6 +307,13 @@ const RegistrationDetails = ({
                       onChange={(e, value) =>
                         handleMembers(value, setFieldValue)
                       }
+                      renderOption={(props, option) => {
+                        return (
+                          <li {...props} key={option.id}>
+                            {option.label}
+                          </li>
+                        );
+                      }}
                       renderInput={(params) => (
                         <TextField
                           {...params}

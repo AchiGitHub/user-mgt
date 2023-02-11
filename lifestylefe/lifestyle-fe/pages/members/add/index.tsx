@@ -4,17 +4,16 @@ import { Form, Formik, FormikValues } from "formik";
 import { GetServerSideProps } from "next";
 import React, { useState } from "react";
 import { Member } from "../../../common/types/Common";
-import {
-  BASE_URL,
-  Gender,
-} from "../../../common/utils/constants";
+import { BASE_URL, Gender } from "../../../common/utils/constants";
 import { memberValidation } from "../../../common/utils/validations";
 import styles from "styles/common.module.css";
 import { useRouter } from "next/router";
 import { ToastType } from "common/types/Common";
 import Toast from "components/ui/Toast/Toast";
+import { DesktopDatePicker } from "@mui/x-date-pickers";
+import moment from "moment";
 
-interface EditMemberProps {
+interface AddMemberProps {
   token: string;
   member: Member;
 }
@@ -28,33 +27,14 @@ export const getServerSideProps: GetServerSideProps<any> = async (context) => {
   let response = {};
   let error = {};
   const token = context.req.cookies?.token;
-  try {
-    const member = await fetch(`${BASE_URL}/member/${context.params?.id}`, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-        "Content-Type": "application/json",
-      },
-    });
-    const data = await member.json();
-    response = data.response;
-  } catch (error) {
-    return {
-      redirect: {
-        permanent: false,
-        destination: "/login",
-      },
-    };
-  }
   return {
     props: {
-      member: response,
-      error,
       token,
     },
   };
 };
 
-function EditMember({ member, token }: EditMemberProps) {
+function AddMember({ token }: AddMemberProps) {
   const router = useRouter();
 
   const [loading, setLoading] = useState(false);
@@ -76,8 +56,8 @@ function EditMember({ member, token }: EditMemberProps) {
   const handleSubmit = async (values: FormikValues) => {
     setLoading(true);
     try {
-      const resp = await fetch(`${BASE_URL}/member/${values.id}`, {
-        method: "PUT",
+      const resp = await fetch(`${BASE_URL}/member`, {
+        method: "POST",
         mode: "cors",
         cache: "no-cache",
         headers: {
@@ -93,7 +73,7 @@ function EditMember({ member, token }: EditMemberProps) {
           ...openSnackbar,
           open: true,
           severity: "success",
-          message: "Member edited successfully!",
+          message: "Member created successfully!",
         };
         setOpenSnackbar(created);
         router.push("/members");
@@ -105,7 +85,7 @@ function EditMember({ member, token }: EditMemberProps) {
         ...openSnackbar,
         open: true,
         severity: "error",
-        message: "Error editing Member!",
+        message: "Error creating Member!",
       };
       setOpenSnackbar(created);
       setLoading(false);
@@ -116,8 +96,17 @@ function EditMember({ member, token }: EditMemberProps) {
     <>
       <Formik
         initialValues={{
-          ...member,
-          gender: genderMap[member.gender]
+          firstName: "",
+          lastName: "",
+          dob: "",
+          nic: "",
+          address: "",
+          mobileNumber: "",
+          secondaryNumber: "",
+          occupation: "",
+          height: 0,
+          weight: 0,
+          gender: genderMap["MALE"],
         }}
         onSubmit={handleSubmit}
         validationSchema={memberValidation}
@@ -221,6 +210,34 @@ function EditMember({ member, token }: EditMemberProps) {
                         />
                       </Grid>
                       <Grid item xs={12} sm={6}>
+                        <DesktopDatePicker
+                          label='DoB'
+                          inputFormat="MM/DD/YYYY"
+                          value={values.dob}
+                          onChange={(value) =>
+                            setFieldValue(
+                              'dob',
+                              moment(value).toISOString()
+                            )
+                          }
+                          renderInput={(params) => (
+                            <TextField
+                              id='dob'
+                              label='DoB'
+                              margin="normal"
+                              name='dob'
+                              variant="standard"
+                              fullWidth
+                              error={
+                                touched.dob && Boolean(errors.dob)
+                              }
+                              helperText={touched.dob && errors.dob}
+                              {...params}
+                            />
+                          )}
+                        />
+                      </Grid>
+                      <Grid item xs={12} sm={6}>
                         <TextField
                           type="number"
                           fullWidth
@@ -249,12 +266,18 @@ function EditMember({ member, token }: EditMemberProps) {
                     </Grid>
                   </Box>
                 </Box>
-                <Box sx={{ display: "flex", justifyContent: "space-between" }} mt={5}>
-                  <Button onClick={() => router.push('/members')} variant="outlined">
+                <Box
+                  sx={{ display: "flex", justifyContent: "space-between" }}
+                  mt={5}
+                >
+                  <Button
+                    onClick={() => router.push("/members")}
+                    variant="outlined"
+                  >
                     Back
                   </Button>
                   <Button type="submit" variant="contained">
-                    Submit
+                    ADD
                   </Button>
                 </Box>
               </div>
@@ -272,4 +295,4 @@ function EditMember({ member, token }: EditMemberProps) {
   );
 }
 
-export default EditMember;
+export default AddMember;

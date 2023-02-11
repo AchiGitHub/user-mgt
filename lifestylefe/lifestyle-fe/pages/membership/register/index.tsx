@@ -53,7 +53,7 @@ function Registrations({ registrations, token }: RegisterProps) {
       valueGetter: ({ row }) => {
         let memberNames: string[] = [];
         row.users.forEach((member: Member) => {
-          memberNames.push(`${member.firstName} ${member.lastName}`);
+          memberNames.push(`${member?.firstName} ${member?.lastName}`);
         });
         return memberNames.join(", ");
       },
@@ -71,7 +71,7 @@ function Registrations({ registrations, token }: RegisterProps) {
       headerName: "Start Date",
       minWidth: 150,
       renderCell: (startDate: any) => (
-        <div>{moment(startDate.value).format("YYYY-MM-DD")}</div>
+        <div>{moment(startDate?.value).format("YYYY-MM-DD")}</div>
       ),
     },
     {
@@ -79,7 +79,7 @@ function Registrations({ registrations, token }: RegisterProps) {
       headerName: "End Date",
       minWidth: 150,
       renderCell: (endDate: any) => (
-        <div>{moment(endDate.value).format("YYYY-MM-DD")}</div>
+        <div>{moment(endDate?.value).format("YYYY-MM-DD")}</div>
       ),
     },
     { field: "amount", headerName: "Amount", minWidth: 150 },

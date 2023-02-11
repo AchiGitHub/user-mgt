@@ -46,7 +46,9 @@ export type Member = {
     mobileNumber: string,
     secondaryNumber: string,
     occupation: string,
-    gender: string
+    gender: string;
+    height: number;
+    weight: number;
 }
 
 export type AutoCompleteProps = {

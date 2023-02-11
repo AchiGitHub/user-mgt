@@ -13,7 +13,7 @@ import Card from "components/common/Card";
 import moment from "moment";
 import { GetServerSideProps } from "next";
 import React, { useEffect, useState } from "react";
-import styles from 'styles/common.module.css';
+import styles from "styles/common.module.css";
 
 export const getServerSideProps: GetServerSideProps<any> = async (context) => {
   let response = [];
@@ -84,11 +84,11 @@ function Home({ token, report, renewals }: ReportProps) {
   useEffect(() => {
     getCustomReport();
     getRenewals();
-  }, [startDate, endDate])
+  }, [startDate, endDate]);
 
   const getCustomReport = async () => {
-    const start = startDate?.startOf('month').toISOString();
-    const end = endDate?.endOf('month').toISOString();
+    const start = startDate?.startOf("month").toISOString();
+    const end = endDate?.endOf("month").toISOString();
     const resp = await fetch(
       `${BASE_URL}/report?startDate=${start}&endDate=${end}`,
       {
@@ -102,7 +102,7 @@ function Home({ token, report, renewals }: ReportProps) {
     if (data) {
       setData(data.response);
     }
-  }
+  };
 
   const getRenewals = async () => {
     const start = endDate?.toISOString();
@@ -119,25 +119,24 @@ function Home({ token, report, renewals }: ReportProps) {
     if (data) {
       setRenewalData(data.response);
     }
-  }
+  };
 
-  if (!data) {
-    return <CircularProgress />;
-  }
-
-
+  
   const getTotalIncome = () => {
     return data?.membershipSummary.reduce((accumulator, obj) => {
       return accumulator + obj.membershipType.price * obj.count;
     }, 0);
   };
-
+  
   const getTotalRegistrations = () => {
     return data?.membershipSummary.reduce((accumulator, obj) => {
       return accumulator + obj.count;
     }, 0);
   };
-
+  
+  if (!data) {
+    return <CircularProgress />;
+  }
   return (
     <Container maxWidth="lg">
       <Typography
@@ -151,7 +150,7 @@ function Home({ token, report, renewals }: ReportProps) {
       </Typography>
       <Grid container spacing={3}>
         <Grid item xs={12} sm={6}>
-          <Card backgroundColor="rgb(255, 247, 205)">
+          <Card backgroundColor="#393E46">
             <Box
               display="flex"
               flexDirection="column"
@@ -163,7 +162,7 @@ function Home({ token, report, renewals }: ReportProps) {
               <Typography
                 variant="h3"
                 fontSize="1.875rem"
-                color="rgb(16, 57, 150)"
+                color="#EEEEEE"
                 fontWeight="700"
               >
                 {getTotalRegistrations()}
@@ -171,7 +170,7 @@ function Home({ token, report, renewals }: ReportProps) {
               <Typography
                 variant="h6"
                 fontSize="0.875rem"
-                color="rgb(16, 57, 150)"
+                color="#EEEEEE"
                 fontWeight="600"
                 sx={{ opacity: 0.72 }}
               >
@@ -181,37 +180,7 @@ function Home({ token, report, renewals }: ReportProps) {
           </Card>
         </Grid>
         <Grid item xs={12} sm={6}>
-          <Card backgroundColor="rgb(209, 233, 252)">
-            <Box
-              display="flex"
-              flexDirection="column"
-              justifyContent="center"
-              alignItems="center"
-              height="100%"
-              textAlign="center"
-            >
-              <Typography
-                variant="h3"
-                fontSize="1.875rem"
-                color="rgb(16, 57, 150)"
-                fontWeight="700"
-              >
-                {renewalData.length}
-              </Typography>
-              <Typography
-                variant="h6"
-                fontSize="0.875rem"
-                color="rgb(16, 57, 150)"
-                fontWeight="600"
-                sx={{ opacity: 0.72 }}
-              >
-                Expiring Registrations
-              </Typography>
-            </Box>
-          </Card>
-        </Grid>
-        <Grid item xs={12} sm={6}>
-          <Card backgroundColor="rgb(208, 242, 255)">
+          <Card backgroundColor="#222831">
             <Box
               display="flex"
               flexDirection="column"
@@ -223,10 +192,10 @@ function Home({ token, report, renewals }: ReportProps) {
               <Typography
                 variant="h3"
                 fontSize="1.275rem"
-                color="rgb(16, 57, 150)"
+                color="#00ADB5"
                 fontWeight="700"
               >
-                {getTotalIncome().toLocaleString("si-LK", {
+                {getTotalIncome()?.toLocaleString("si-LK", {
                   style: "currency",
                   currency: "LKR",
                 })}
@@ -234,7 +203,7 @@ function Home({ token, report, renewals }: ReportProps) {
               <Typography
                 variant="h6"
                 fontSize="0.875rem"
-                color="rgb(16, 57, 150)"
+                color="#00ADB5"
                 fontWeight="600"
                 sx={{ opacity: 0.72 }}
               >
@@ -255,34 +224,74 @@ function Home({ token, report, renewals }: ReportProps) {
         Registrations...
       </Typography>
       <Box mt="20px">
-        <Box display='flex' justifyContent='space-between' mb={2} alignItems="center" className={styles['filter-dates']}>
+        <Box
+          display="flex"
+          justifyContent="space-between"
+          mb={2}
+          alignItems="center"
+          className={styles["filter-dates"]}
+        >
           <DatePicker
-            views={['year', 'month']}
+            views={["year", "month"]}
             label="Select Report Start Date"
             value={startDate}
             onChange={(newValue) => {
               setStartDate(newValue);
             }}
-            renderInput={(params) => <TextField fullWidth {...params} helperText={null} />}            
+            renderInput={(params) => (
+              <TextField fullWidth {...params} helperText={null} />
+            )}
           />
-          <Box ml='10px' mr='10px'>
+          <Box ml="10px" mr="10px">
             <Typography>to</Typography>
           </Box>
           <DatePicker
-            views={['year', 'month']}
+            views={["year", "month"]}
             label="Select Report End Date"
             value={endDate}
             onChange={(newValue) => {
               setEndDate(newValue);
             }}
-            renderInput={(params) => <TextField fullWidth {...params} helperText={null} />}
+            renderInput={(params) => (
+              <TextField fullWidth {...params} helperText={null} />
+            )}
           />
         </Box>
         <Grid container spacing={3}>
+          <Grid item xs={12} sm={6}>
+            <Card backgroundColor="#00ADB5">
+              <Box
+                display="flex"
+                flexDirection="column"
+                justifyContent="center"
+                alignItems="center"
+                height="100%"
+                textAlign="center"
+              >
+                <Typography
+                  variant="h3"
+                  fontSize="1.875rem"
+                  color="#222831"
+                  fontWeight="700"
+                >
+                  {renewalData.length}
+                </Typography>
+                <Typography
+                  variant="h6"
+                  fontSize="0.875rem"
+                  color="#222831"
+                  fontWeight="600"
+                  sx={{ opacity: 0.72 }}
+                >
+                  Expiring Registrations
+                </Typography>
+              </Box>
+            </Card>
+          </Grid>
           {data?.membershipSummary.map((item, key) => {
             return (
               <Grid key={item.membershipType.id} item xs={12} md={6} sm={6}>
-                <Card backgroundColor="rgb(208, 242, 255)">
+                <Card backgroundColor="#222831">
                   <Box
                     display="flex"
                     flexDirection="column"
@@ -294,7 +303,7 @@ function Home({ token, report, renewals }: ReportProps) {
                     <Typography
                       variant="h3"
                       fontSize="1.275rem"
-                      color="rgb(16, 57, 150)"
+                      color="#00ADB5"
                       fontWeight="700"
                     >
                       {item.count}
@@ -302,7 +311,7 @@ function Home({ token, report, renewals }: ReportProps) {
                     <Typography
                       variant="h6"
                       fontSize="0.875rem"
-                      color="rgb(16, 57, 150)"
+                      color="#00ADB5"
                       fontWeight="600"
                       sx={{ opacity: 0.72 }}
                     >
@@ -311,7 +320,7 @@ function Home({ token, report, renewals }: ReportProps) {
                     <Typography
                       variant="h3"
                       fontSize="1.275rem"
-                      color="rgb(16, 57, 150)"
+                      color="#00ADB5"
                       fontWeight="700"
                     >
                       {(item.count * item.membershipType.price).toLocaleString(

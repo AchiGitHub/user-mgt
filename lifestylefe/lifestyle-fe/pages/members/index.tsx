@@ -1,11 +1,11 @@
-import { Edit } from "@mui/icons-material";
-import { IconButton } from "@mui/material";
+import { Delete, Edit } from "@mui/icons-material";
+import { Button, IconButton } from "@mui/material";
 import { Container } from "@mui/system";
-import { DataGrid, GridColDef } from "@mui/x-data-grid";
+import { DataGrid, GridColDef, GridSelectionModel } from "@mui/x-data-grid";
 import moment from "moment";
 import { GetServerSideProps } from "next";
 import { useRouter } from "next/router";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Member } from "../../common/types/Common";
 import { BASE_URL } from "../../common/utils/constants";
 
@@ -45,7 +45,14 @@ interface MembersProps {
 }
 
 function Members({ members, token }: MembersProps) {
+  const [selectedIds, setSelectedIds] = useState<GridSelectionModel>();
+  const [allMembers, setAllMembers] = useState<Member[]>([]);
   const route = useRouter();
+
+  useEffect(() => {
+    setAllMembers(members);
+  }, [members]);
+
   const columns: GridColDef[] = [
     { field: "firstName", headerName: "First Name", minWidth: 150, flex: 1 },
     { field: "lastName", headerName: "Last Name", minWidth: 150, flex: 1 },
@@ -79,6 +86,13 @@ function Members({ members, token }: MembersProps) {
       sortable: false,
       disableColumnMenu: true,
       headerName: "",
+      renderHeader: () => {
+        return (
+          <IconButton onClick={handleDeleteMembers} disabled={!selectedIds}>
+            <Delete />
+          </IconButton>
+        );
+      },
       renderCell: (params) => {
         return (
           <IconButton
@@ -91,14 +105,56 @@ function Members({ members, token }: MembersProps) {
     },
   ];
 
+  const handleDeleteMembers = async () => {
+    let response = await Promise.allSettled(
+      (selectedIds as string[])?.map(async (id) => {
+        await fetch(`${BASE_URL}/member/${id}`, {
+          method: "DELETE",
+          mode: "cors",
+          cache: "no-cache",
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        });
+        return id;
+      })
+    );
+    // get ids that were deleted
+    const deletedIds = response.map((resp) =>
+      resp.status === "fulfilled" ? resp.value : ""
+    );
+    // filter available filteredMembers
+    const filteredMembers = allMembers.filter(
+      (item) => !deletedIds.includes(item.id)
+    );
+    setAllMembers(filteredMembers);
+  };
+
   return (
     <Container>
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "flex-end",
+          margin: "0 0 10px 0",
+        }}
+      >
+        <Button
+          variant="contained"
+          onClick={() => route.push("/members/add")}
+        >
+          ADD MEMBER
+        </Button>
+      </div>
       <div style={{ height: 550, width: "100%" }}>
         <DataGrid
           columns={columns}
-          rows={members}
+          rows={allMembers}
           pageSize={100}
           rowsPerPageOptions={[5]}
+          checkboxSelection
+          onSelectionModelChange={(ids) => setSelectedIds(ids)}
         />
       </div>
     </Container>
