@@ -8,7 +8,7 @@ import moment from "moment";
 import { GetServerSideProps } from "next";
 
 export const getServerSideProps: GetServerSideProps<any> = async (context) => {
-  let response = [];
+  let response: any[] = [];
   let error = {};
   const token = context.req.cookies?.token;
   try {
@@ -19,7 +19,12 @@ export const getServerSideProps: GetServerSideProps<any> = async (context) => {
       },
     });
     const members = await resp.json();
-    response = members.response;
+    const allRegistrations: RegisterTypes[] = members.response;
+    const data = allRegistrations.map((reg) => {
+      if (moment(reg.endDate).isAfter(moment(new Date()))) {
+        response.push(reg);
+      }
+    });
   } catch (error) {
     return {
       redirect: {

@@ -1,5 +1,6 @@
-import { Box, CircularProgress, TextField } from "@mui/material";
-import { DataGrid, GridColDef } from "@mui/x-data-grid";
+import { Delete } from "@mui/icons-material";
+import { Box, CircularProgress, IconButton, TextField } from "@mui/material";
+import { DataGrid, GridColDef, GridSelectionModel } from "@mui/x-data-grid";
 import { DatePicker } from "@mui/x-date-pickers";
 import moment from "moment";
 import { GetServerSideProps } from "next";
@@ -47,12 +48,38 @@ interface RenewalProps {
 
 function Renewals({ renewals, token }: RenewalProps) {
   const [loading, setLoading] = useState(false);
-  const [allRenewals, setAllRenewals] = useState([]);
+  const [allRenewals, setAllRenewals] = useState<any>([]);
   const [selectedDate, setSelectedDate] = useState(moment().toISOString());
-
+  const [selectedIds, setSelectedIds] = useState<GridSelectionModel>();
   useEffect(() => {
     setAllRenewals(renewals);
   }, [renewals]);
+
+  const handleDeleteMembers = async () => {
+    let response = await Promise.allSettled(
+      (selectedIds as string[])?.map(async (id) => {
+        await fetch(`${BASE_URL}/registration/${id}`, {
+          method: "DELETE",
+          mode: "cors",
+          cache: "no-cache",
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        });
+        return id;
+      })
+    );
+    // get ids that were deleted
+    const deletedIds = response.map((resp) =>
+      resp.status === "fulfilled" ? resp.value : ""
+    );
+    // filter available filteredMembers
+    const newRenewals = allRenewals.filter(
+      (item: any) => !deletedIds.includes(item.id)
+    );
+    setAllRenewals(newRenewals);
+  };
 
   const columns: GridColDef[] = [
     {
@@ -62,7 +89,7 @@ function Renewals({ renewals, token }: RenewalProps) {
       valueGetter: ({ row }) => {
         let memberNames: string[] = [];
         row.users.forEach((member: Member) => {
-          memberNames.push(`${member.firstName} ${member.lastName}`);
+          memberNames.push(`${member?.firstName} ${member?.lastName}`);
         });
         return memberNames.join(", ");
       },
@@ -90,6 +117,20 @@ function Renewals({ renewals, token }: RenewalProps) {
       ),
     },
     { field: "amount", headerName: "Amount", minWidth: 150 },
+    {
+      field: "delete",
+      minWidth: 75,
+      sortable: false,
+      disableColumnMenu: true,
+      headerName: "",
+      renderHeader: () => {
+        return (
+          <IconButton onClick={handleDeleteMembers} disabled={!selectedIds}>
+            <Delete />
+          </IconButton>
+        );
+      },
+    },
   ];
 
   const getRenewals = async (date: string) => {
@@ -138,7 +179,7 @@ function Renewals({ renewals, token }: RenewalProps) {
             display: "flex",
             justifyContent: "center",
             alignItems: "center",
-            height: '80vh'
+            height: "80vh",
           }}
         >
           <CircularProgress />
@@ -152,6 +193,8 @@ function Renewals({ renewals, token }: RenewalProps) {
               pageSize={100}
               rowsPerPageOptions={[5]}
               sx={{ overflowX: "scroll" }}
+              checkboxSelection
+              onSelectionModelChange={(ids) => setSelectedIds(ids)}
             />
           </div>
         </Box>

@@ -11,7 +11,8 @@ export type MembershipType = {
     membershipName: string,
     price: number,
     numberOfMembers: number,
-    durationId: string
+    durationId: string,
+    duration?: any
 };
 
 export type RegisterTypes = {

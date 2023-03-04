@@ -15,7 +15,7 @@ import { Form, Formik, FormikValues, useFormikContext } from "formik";
 import moment from "moment";
 import { GetServerSideProps } from "next";
 import { useRouter } from "next/router";
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import {
   AutoCompleteProps,
   Member,
@@ -170,6 +170,7 @@ const RegistrationDetails = ({
   });
   const { formId, formField } = RenewFormModel;
   const { membershipType, amount, endDate, startDate, users } = formField;
+  const formRef = useRef<any>({});
 
   const handleSubmit = async (values: FormikValues) => {
     setLoading(true);
@@ -233,7 +234,22 @@ const RegistrationDetails = ({
     )[0];
     setValue(amount.name, selectedMembership.price);
     setValue(membershipType.name, value);
+    const duration = selectedMembership.duration.duration;
+    const selectedStartDate = moment(formRef.current.values.startDate);
+    setValue(endDate.name, selectedStartDate.add(duration, 'months').toISOString());
   };
+
+  const handleDateChange = (value: any, setValue: any) => {
+    setValue(startDate.name, moment(value).toISOString());
+    const formValues = formRef.current.values;
+    const selectedType = formValues.membershipType;
+    const membership = membershipTypes.find(item => item.id === selectedType);
+    if (membership) {
+      const duration = membership.duration.duration;
+      const selectedStartDate = formValues.startDate;
+      setValue(endDate.name, moment(selectedStartDate).add(duration, 'months').toISOString());
+    }
+  }
 
   const handleMembers = (
     value: AutoCompleteProps[],
@@ -261,6 +277,7 @@ const RegistrationDetails = ({
         initialValues={RenewValues}
         onSubmit={handleSubmit}
         validationSchema={RenewValidationSchema[0]}
+        innerRef={formRef}
       >
         {({ values, touched, errors, handleChange, setFieldValue }) => (
           <Form id={formId}>
@@ -333,9 +350,9 @@ const RegistrationDetails = ({
                       inputFormat="MM/DD/YYYY"
                       value={values.startDate}
                       onChange={(value) =>
-                        setFieldValue(
-                          startDate.name,
-                          moment(value).toISOString()
+                        handleDateChange(
+                          value,
+                          setFieldValue
                         )
                       }
                       renderInput={(params) => (

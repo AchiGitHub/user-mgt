@@ -1,13 +1,9 @@
-# fly.toml file generated for lifestyle-fitness on 2022-12-31T20:39:27+05:30
+# fly.toml file generated for lifestyle-fitness on 2023-01-28T17:54:07+05:30
 
 app = "lifestyle-fitness"
 kill_signal = "SIGINT"
 kill_timeout = 5
 processes = []
-
-[build]
-  [build.args]
-    NEXT_PUBLIC_EXAMPLE = "Value goes here"
 
 [env]
   PORT = "8080"

@@ -56,14 +56,13 @@ export default function App({ Component, pageProps, router: nextRouter }: AppPro
             flexGrow: 1,
             bgcolor: "background.default",
             p: 3,
-            height: "100vh",
           }}
         >
           <Component {...pageProps} />
         </Box>
        : (
         <LocalizationProvider dateAdapter={AdapterMoment}>
-          <Box sx={{ display: "flex", height: "100vh" }}>
+          <Box sx={{ display: "flex" }}>
             <AppBar
               position="fixed"
               sx={{

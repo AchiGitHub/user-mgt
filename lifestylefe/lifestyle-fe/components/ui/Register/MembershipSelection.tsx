@@ -29,12 +29,26 @@ function MembershipSelection({
       setFieldValue(amount.name, membershipTypes[selectedMembershipType].price);
       setFieldValue(paymentAmount.name, membershipTypes[selectedMembershipType].price);
       setFieldValue("users", getUsersArray(membershipTypes[selectedMembershipType].numberOfMembers));
+      const duration = membershipTypes[selectedMembershipType].duration.duration;
+      const selectedStartDate = values.startDate;
+      setFieldValue(endDate.name, moment(selectedStartDate).add(duration, 'months').toISOString());
     }
   };
 
   const handleAmountChange = (e: any) => {
     setFieldValue(amount.name, e.target.value);
     setFieldValue("paymentAmount", e.target.value);
+  }
+
+  const handleDateChange = (value: string | null, keyboardInputValue?: string | undefined) => {
+    setFieldValue(startDate.name, moment(value).toISOString());
+    const selectedType = values.membershipType;
+    const membership = membershipTypes.find(item => item.id === selectedType);
+    if (membership) {
+      const duration = membership.duration.duration;
+      const selectedStartDate = values.startDate;
+      setFieldValue(endDate.name, moment(selectedStartDate).add(duration, 'months').toISOString());
+    }
   }
 
   return (
@@ -83,7 +97,7 @@ function MembershipSelection({
             label={startDate.label}
             inputFormat="MM/DD/YYYY"
             value={values.startDate}
-            onChange={(value) => setFieldValue(startDate.name, moment(value).toISOString())}
+            onChange={handleDateChange}
             renderInput={(params) => (
               <TextField
                 id={startDate.name}
