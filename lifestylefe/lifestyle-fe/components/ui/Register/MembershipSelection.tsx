@@ -43,7 +43,7 @@ function MembershipSelection({
   const handleDateChange = (value: string | null, keyboardInputValue?: string | undefined) => {
     setFieldValue(startDate.name, moment(value).toISOString());
     const selectedType = values.membershipType;
-    const membership = membershipTypes.find(item => item.id === selectedType);
+    const membership = membershipTypes.find(item => item.id === selectedType.id);
     if (membership) {
       const duration = membership.duration.duration;
       const selectedStartDate = values.startDate;
@@ -68,7 +68,7 @@ function MembershipSelection({
             value={values.membershipType}
             onChange={(e) => handleMembershipTypeChange(e.target.value)}
             error={touched.membershipType && Boolean(errors.membershipType)}
-            helperText={touched.membershipType && errors.membershipType}
+            // helperText={touched.membershipType && errors.membershipType}
           >
             {membershipTypes.map((item: MembershipType) => (
               <MenuItem key={item.id} value={item.id}>

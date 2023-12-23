@@ -17,7 +17,7 @@ export type MembershipType = {
 
 export type RegisterTypes = {
     name: string,
-    membershipType: string,
+    membershipType: MembershipType,
     amount: string,
     startDate: string,
     endDate: string,
@@ -76,4 +76,12 @@ export type Report = {
         membershipType: MembershipType;
         count: number;
     }[];
+}
+
+export interface AllActiveRegistrations {
+    content: RegisterTypes[];
+    totalElements: number;
+    totalPages: number;
+    last: boolean;
+    number: number
 }

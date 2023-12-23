@@ -305,7 +305,7 @@ const RegistrationDetails = ({
                     >
                       {membershipTypes.map((item: MembershipType) => (
                         <MenuItem key={item.id} value={item.id}>
-                          {item.membershipName}
+                          {item?.membershipName}
                         </MenuItem>
                       ))}
                     </TextField>

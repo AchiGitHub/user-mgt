@@ -1,6 +1,19 @@
-import { Button, Container } from "@mui/material";
+import {
+  Box,
+  Button,
+  CircularProgress,
+  Container,
+  Stack,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TablePagination,
+  TableRow,
+} from "@mui/material";
 import { useRouter } from "next/router";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { BASE_URL } from "../../../common/utils/constants";
 import { Member, RegisterTypes } from "../../../common/types/Common";
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
@@ -9,18 +22,22 @@ import { GetServerSideProps } from "next";
 
 export const getServerSideProps: GetServerSideProps<any> = async (context) => {
   let response: any[] = [];
+  let pages: number = 0;
+  let totalElements: number = 0;
   let error = {};
   const token = context.req.cookies?.token;
   try {
-    const resp = await fetch(`${BASE_URL}/registration`, {
+    const resp = await fetch(`${BASE_URL}/registration/active?pageNum=0`, {
       headers: {
         Authorization: `Bearer ${token}`,
         "Content-Type": "application/json",
       },
     });
     const members = await resp.json();
-    const allRegistrations: RegisterTypes[] = members.response;
-    const data = allRegistrations.map((reg) => {
+    const allRegistrations: RegisterTypes[] = members.response.content;
+    pages = members.response.totalPages;
+    totalElements = members.response.totalElements;
+    allRegistrations.map((reg) => {
       if (moment(reg.endDate).isAfter(moment(new Date()))) {
         response.push(reg);
       }
@@ -36,6 +53,8 @@ export const getServerSideProps: GetServerSideProps<any> = async (context) => {
   return {
     props: {
       registrations: response,
+      pages,
+      totalElements,
       error,
       token,
     },
@@ -45,50 +64,98 @@ export const getServerSideProps: GetServerSideProps<any> = async (context) => {
 interface RegisterProps {
   registrations: RegisterTypes[];
   token: string;
+  totalElements: number;
+  pages: number;
 }
 
-function Registrations({ registrations, token }: RegisterProps) {
+interface Column {
+  id: string;
+  label: string;
+  minWidth?: number;
+  align?: "right";
+  format?: (value: any) => string;
+}
+
+function Registrations({
+  registrations,
+  pages,
+  totalElements,
+  token,
+}: RegisterProps) {
+  const [pageNumber, setPageNumber] = useState<number>(0);
+  const [allRegs, setAllRegs] = useState<RegisterTypes[]>([]);
+  const [loading, setLoading] = useState<boolean>(false);
   const route = useRouter();
 
-  const columns: GridColDef[] = [
+  useEffect(() => {
+    setAllRegs(registrations);
+  }, []);
+
+  const columns: Column[] = [
     {
-      field: "users",
-      headerName: "Member(s)",
+      id: "users",
+      label: "Member(s)",
       minWidth: 350,
-      valueGetter: ({ row }) => {
+      format: (members) => {
+        console.log(members)
         let memberNames: string[] = [];
-        row.users.forEach((member: Member) => {
+        members.forEach((member: Member) => {
           memberNames.push(`${member?.firstName} ${member?.lastName}`);
         });
         return memberNames.join(", ");
       },
     },
     {
-      field: "membershipType",
-      headerName: "Membership Type",
+      id: "membershipType",
+      label: "Membership Type",
       minWidth: 200,
-      valueGetter: (params) => {
-        return params.row.membershipType.membershipName;
+      format: (membershipType) => {
+        return membershipType?.membershipName;
       },
     },
     {
-      field: "startDate",
-      headerName: "Start Date",
+      id: "startDate",
+      label: "Start Date",
       minWidth: 150,
-      renderCell: (startDate: any) => (
-        <div>{moment(startDate?.value).format("YYYY-MM-DD")}</div>
-      ),
+      format: (startDate: any) => moment(startDate?.value).format("YYYY-MM-DD"),
     },
     {
-      field: "endDate",
-      headerName: "End Date",
+      id: "endDate",
+      label: "End Date",
       minWidth: 150,
-      renderCell: (endDate: any) => (
-        <div>{moment(endDate?.value).format("YYYY-MM-DD")}</div>
-      ),
+      format: (endDate: any) => moment(endDate?.value).format("YYYY-MM-DD"),
     },
-    { field: "amount", headerName: "Amount", minWidth: 150 },
+    { id: "amount", label: "Amount", minWidth: 150 },
   ];
+
+  const getRegistrations = async (page: number) => {
+    let response: any[] = [];
+    setLoading(true);
+    setPageNumber(page);
+    await fetch(`${BASE_URL}/registration/active?pageNum=${page}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+    })
+      .then((response) => {
+        return response.json();
+      })
+      .then((response) => {
+        return response.response;
+      })
+      .then((resp: any) => {
+        const allRegistrations: RegisterTypes[] = resp.content;
+        allRegistrations.map((reg) => {
+          if (moment(reg.endDate).isAfter(moment(new Date()))) {
+            response.push(reg);
+          }
+        });
+        setAllRegs(response);
+      })
+      .catch(() => route.push("/login"))
+      .finally(() => setLoading(false))
+  };
 
   return (
     <Container>
@@ -107,12 +174,48 @@ function Registrations({ registrations, token }: RegisterProps) {
         </Button>
       </div>
       <div style={{ height: 550, width: "100%" }}>
-        <DataGrid
-          columns={columns}
-          rows={registrations}
-          pageSize={100}
-          rowsPerPageOptions={[5]}
-          sx={{ overflowX: "scroll" }}
+        <TableContainer sx={{ maxHeight: 440 }}>
+          <Table stickyHeader aria-label="sticky table">
+            <TableHead color="primary">
+              <TableRow>
+                {columns.map((column) => (
+                  <TableCell
+                    key={column.id}
+                    align={column.align}
+                    style={{ minWidth: column.minWidth }}
+                  >
+                    {column.label}
+                  </TableCell>
+                ))}
+              </TableRow>
+            </TableHead>
+            <TableBody sx={{height: '400px'}}>
+              {loading ? <Box position='absolute' top='50%' left='50%'><CircularProgress/></Box> : allRegs.map((row: any) => {
+                return (
+                  <TableRow hover role="checkbox" tabIndex={-1} key={`${row.name}${row.startDate}`}>
+                    {columns.map((column: any) => {
+                      const value = row[column.id];
+                      return (
+                        <TableCell key={column.id} align={column.align}>
+                          {column.format ? column.format(value) : value}
+                        </TableCell>
+                      );
+                    })}
+                  </TableRow>
+                );
+              })}
+            </TableBody>
+          </Table>
+        </TableContainer>
+        <TablePagination
+          component="div"
+          rowsPerPageOptions={[]}
+          count={totalElements}
+          rowsPerPage={10}
+          page={pageNumber}
+          onPageChange={(event: unknown, newPage: number) =>
+            getRegistrations(newPage)
+          }
         />
       </div>
     </Container>

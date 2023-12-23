@@ -98,7 +98,7 @@ function Renewals({ renewals, token }: RenewalProps) {
       field: "membershipType",
       headerName: "Membership Type",
       minWidth: 200,
-      renderCell: ({ value }) => <div>{value.membershipName}</div>,
+      renderCell: ({ value }) => <div>{value?.membershipName}</div>,
     },
     {
       field: "startDate",

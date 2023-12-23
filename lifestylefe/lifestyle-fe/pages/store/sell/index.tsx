@@ -60,7 +60,7 @@ function SellProduct({
   const [selectedProduct, setSelectedProduct] = React.useState({});
 
   useEffect(() => {
-    const data = products.filter(product => product.quantity > product.sold);
+    const data = products.filter(product => product);
     setAllProducts(data);
   }, [products]);
   
