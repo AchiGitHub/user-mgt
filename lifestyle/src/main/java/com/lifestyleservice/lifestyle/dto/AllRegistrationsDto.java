@@ -26,7 +26,7 @@ public class AllRegistrationsDto {
     @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
     private LocalDateTime endDate;
     @NotNull
-    private List<Optional<Member>> users;
+    private List<Member> users;
     @NotNull
     private Double amount;
     @NotNull

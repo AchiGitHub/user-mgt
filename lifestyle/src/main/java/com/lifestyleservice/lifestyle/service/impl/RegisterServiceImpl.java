@@ -1,8 +1,6 @@
 package com.lifestyleservice.lifestyle.service.impl;
 
-import com.lifestyleservice.lifestyle.dto.AllRegistrationsDto;
-import com.lifestyleservice.lifestyle.dto.GetRegistrationsDto;
-import com.lifestyleservice.lifestyle.dto.RegisterUserDto;
+import com.lifestyleservice.lifestyle.dto.*;
 import com.lifestyleservice.lifestyle.entity.Member;
 import com.lifestyleservice.lifestyle.entity.MembershipType;
 import com.lifestyleservice.lifestyle.entity.Payments;
@@ -18,6 +16,9 @@ import com.lifestyleservice.lifestyle.util.TransportDto;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -25,6 +26,7 @@ import org.springframework.web.server.ResponseStatusException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -65,26 +67,25 @@ public class RegisterServiceImpl implements RegistrationService {
 
     @Override
     public TransportDto getAllRegistrations() {
+
         List<Registration> allRegistrations = registrationRepository.findAll();
         List<GetRegistrationsDto> allRegistrationsDto = new ArrayList<>();
         if (allRegistrations != null) {
             List<AllRegistrationsDto> regs = new ArrayList<>();
             allRegistrations.forEach(reg -> {
-                AllRegistrationsDto newObj = new AllRegistrationsDto();
-                newObj.setId(reg.getId());
-                Optional<MembershipType> mt = membershipRepository.findById(reg.getMembershipType());
-                List<Optional<Member>> members = new ArrayList<>();
-                reg.getUsers().forEach(member -> {
-                    Optional<Member> getMem = memberRepository.findById(member);
-                    members.add(getMem);
-                });
-                newObj.setAmount(reg.getAmount());
-                newObj.setName(reg.getName());
-                newObj.setEndDate(reg.getEndDate());
-                newObj.setStartDate(reg.getStartDate());
-                newObj.setUsers(members);
-                newObj.setMembershipType(mt);
-                regs.add(newObj);
+                if (reg.getEndDate().isAfter(LocalDateTime.now())) {
+                    AllRegistrationsDto newObj = new AllRegistrationsDto();
+                    newObj.setId(reg.getId());
+                    Optional<MembershipType> mt = membershipRepository.findById(reg.getMembershipType());
+                    List<Member> members = memberRepository.findMembersByIds(reg.getUsers());
+                    newObj.setAmount(reg.getAmount());
+                    newObj.setName(reg.getName());
+                    newObj.setEndDate(reg.getEndDate());
+                    newObj.setStartDate(reg.getStartDate());
+                    newObj.setUsers(members);
+                    newObj.setMembershipType(mt);
+                    regs.add(newObj);
+                }
             });
             return requestHelper.setResponse(regs);
         } else {
@@ -194,11 +195,7 @@ public class RegisterServiceImpl implements RegistrationService {
                 AllRegistrationsDto newObj = new AllRegistrationsDto();
                 newObj.setId(reg.getId());
                 Optional<MembershipType> mt = membershipRepository.findById(reg.getMembershipType());
-                List<Optional<Member>> members = new ArrayList<>();
-                reg.getUsers().forEach(member -> {
-                    Optional<Member> getMem = memberRepository.findById(member);
-                    members.add(getMem);
-                });
+                List<Member> members = memberRepository.findMembersByIds(reg.getUsers());
                 newObj.setAmount(reg.getAmount());
                 newObj.setName(reg.getName());
                 newObj.setEndDate(reg.getEndDate());
@@ -208,6 +205,43 @@ public class RegisterServiceImpl implements RegistrationService {
                 regs.add(newObj);
             });
             return requestHelper.setResponse(regs);
+        } else {
+            return requestHelper.setError(HttpStatus.NOT_FOUND, "No records found!");
+        }
+    }
+
+    @Override
+    public TransportDto findAllActiveRegistrations(int pageNum, UUID filterId) {
+        LocalDateTime today = LocalDateTime.now();
+        Pageable pageable = PageRequest.of(pageNum, 10);
+        Page<Registration> activeRegistrations;
+        if (filterId != null) {
+            activeRegistrations = registrationRepository.findAllFilteredWithPagination(today, filterId, pageable);
+        } else {
+            activeRegistrations = registrationRepository.findAllActiveRegistrationsWithPagination(today, pageable);
+        }
+        AllActiveRegistrationsDto allActiveRegistrationsDto = new AllActiveRegistrationsDto();
+        if (activeRegistrations.getContent() != null) {
+            List<AllRegistrationsDto> regs = new ArrayList<>();
+            activeRegistrations.getContent().forEach(reg -> {
+                AllRegistrationsDto newObj = new AllRegistrationsDto();
+                newObj.setId(reg.getId());
+                Optional<MembershipType> mt = membershipRepository.findById(reg.getMembershipType());
+                List<Member> members = memberRepository.findMembersByIds(reg.getUsers());
+
+                newObj.setAmount(reg.getAmount());
+                newObj.setName(reg.getName());
+                newObj.setEndDate(reg.getEndDate());
+                newObj.setStartDate(reg.getStartDate());
+                newObj.setUsers(members);
+                newObj.setMembershipType(mt);
+                regs.add(newObj);
+            });
+            allActiveRegistrationsDto.setContent(regs);
+            allActiveRegistrationsDto.setPageNo(activeRegistrations.getNumber());
+            allActiveRegistrationsDto.setTotalPages(activeRegistrations.getTotalPages());
+            allActiveRegistrationsDto.setTotalElements(activeRegistrations.getTotalElements());
+            return requestHelper.setResponse(allActiveRegistrationsDto);
         } else {
             return requestHelper.setError(HttpStatus.NOT_FOUND, "No records found!");
         }

@@ -1,8 +1,11 @@
 package com.lifestyleservice.lifestyle.repository;
 
 import com.lifestyleservice.lifestyle.entity.Registration;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
@@ -19,4 +22,10 @@ public interface RegistrationRepository extends JpaRepository<Registration, UUID
 
     @Query("select r.membershipType, COUNT(r.membershipType) from Registration r where r.startDate BETWEEN ?1 AND ?2 GROUP BY r.membershipType")
     List<String[]> findAllByMembershipType(LocalDateTime from, LocalDateTime to);
+
+    @Query("select r from Registration r where r.endDate > ?1")
+    Page<Registration> findAllActiveRegistrationsWithPagination(LocalDateTime from, Pageable pageable);
+
+    @Query("select r from Registration r inner join r.users u where r.endDate > :from AND u.id = :memberId")
+    Page<Registration> findAllFilteredWithPagination(@Param("from") LocalDateTime from, @Param("memberId") UUID memberId, Pageable pageable);
 }

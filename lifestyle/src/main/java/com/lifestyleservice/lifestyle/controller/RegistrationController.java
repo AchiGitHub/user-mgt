@@ -100,4 +100,10 @@ public class RegistrationController {
         TransportDto res = registrationService.filterRegistrations(dateTime);
         return ResponseEntity.ok(res);
     }
+
+    @GetMapping("/active")
+    public ResponseEntity findAllActiveRegistrations(@RequestParam(value="pageNum", required = false) int pageNum, @RequestParam(value="id", required = false) UUID id) {
+        TransportDto res = registrationService.findAllActiveRegistrations(pageNum, id);
+        return ResponseEntity.ok(res);
+    }
 }

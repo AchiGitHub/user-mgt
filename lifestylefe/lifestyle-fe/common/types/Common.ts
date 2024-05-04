@@ -16,6 +16,7 @@ export type MembershipType = {
 };
 
 export type RegisterTypes = {
+    id: string;
     name: string,
     membershipType: MembershipType,
     amount: string,
