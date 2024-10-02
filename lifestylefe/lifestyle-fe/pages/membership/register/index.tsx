@@ -2,7 +2,7 @@ import { Button, Container, IconButton } from "@mui/material";
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 import { BASE_URL } from "../../../common/utils/constants";
-import { Member, RegisterTypes } from "../../../common/types/Common";
+import { Member, MembershipType, RegisterTypes } from "../../../common/types/Common";
 import { DataGrid, GridColDef, GridSelectionModel } from "@mui/x-data-grid";
 import moment from "moment";
 import { GetServerSideProps } from "next";
@@ -10,6 +10,7 @@ import { Delete, Edit } from "@mui/icons-material";
 
 export const getServerSideProps: GetServerSideProps<any> = async (context) => {
   let response = [];
+  let membershipTypesResponse = [];
   let error = {};
   const token = context.req.cookies?.token;
   try {
@@ -21,6 +22,18 @@ export const getServerSideProps: GetServerSideProps<any> = async (context) => {
     });
     const members = await resp.json();
     response = members.response;
+
+    const membershipTypesResp = await fetch(
+      `${BASE_URL}/membership/type`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      }
+    );
+    const membershipTypes = await membershipTypesResp.json();
+    membershipTypesResponse = membershipTypes.response;
   } catch (error) {
     return {
       redirect: {
@@ -32,6 +45,7 @@ export const getServerSideProps: GetServerSideProps<any> = async (context) => {
   return {
     props: {
       registrations: response,
+      membershipTypes: membershipTypesResponse,
       error,
       token,
     },
@@ -40,10 +54,11 @@ export const getServerSideProps: GetServerSideProps<any> = async (context) => {
 
 interface RegisterProps {
   registrations: RegisterTypes[];
+  membershipTypes: MembershipType[];
   token: string;
 }
 
-function Registrations({ registrations, token }: RegisterProps) {
+function Registrations({ registrations, token, membershipTypes }: RegisterProps) {
   const [selectedIds, setSelectedIds] = useState<GridSelectionModel>();
   const [allRegistrations, setAllRegistrations] = useState<RegisterTypes[]>([]);
 
@@ -97,6 +112,8 @@ function Registrations({ registrations, token }: RegisterProps) {
       valueGetter: (params) => {
         return params.row.membershipType?.membershipName;
       },
+      type: 'singleSelect',
+      valueOptions: membershipTypes?.map((membershipType: MembershipType) => membershipType.membershipName)
     },
     {
       field: "startDate",

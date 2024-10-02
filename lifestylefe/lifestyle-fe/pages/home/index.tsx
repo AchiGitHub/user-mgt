@@ -1,10 +1,6 @@
 import {
   Box,
-  Button,
   CircularProgress,
-  DialogActions,
-  DialogContent,
-  DialogTitle,
   Grid,
   TextField,
   Typography,
@@ -88,6 +84,7 @@ interface ReportProps {
   token: string;
   report: Report;
   renewals: any;
+  membershipTypes: MembershipType[]
 }
 
 function Home({ token, report, renewals, membershipTypes }: ReportProps) {
