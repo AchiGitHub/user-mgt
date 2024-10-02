@@ -189,7 +189,7 @@ function Renewals({ renewals, token }: RenewalProps) {
           <div style={{ height: 550, width: "100%" }}>
             <DataGrid
               columns={columns}
-              rows={allRenewals}
+              rows={allRenewals ?? []}
               pageSize={100}
               rowsPerPageOptions={[5]}
               sx={{ overflowX: "scroll" }}
