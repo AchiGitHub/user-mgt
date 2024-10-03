@@ -28,4 +28,9 @@ public interface RegistrationRepository extends JpaRepository<Registration, UUID
 
     @Query("select r from Registration r inner join r.users u where r.endDate > :from AND u.id = :memberId")
     Page<Registration> findAllFilteredWithPagination(@Param("from") LocalDateTime from, @Param("memberId") UUID memberId, Pageable pageable);
+
+    @Query("SELECT r FROM Registration r " +
+            "WHERE r.endDate < :now AND r.endDate = " +
+            "(SELECT MAX(r2.endDate) FROM Registration r2 WHERE r2.name = r.name AND r2.endDate < :now)")
+    List<Registration> findExpiredRegistrations(@Param("now") LocalDateTime now);
 }

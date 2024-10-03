@@ -18,4 +18,5 @@ public interface RegistrationService {
     TransportDto createNewRegistration(RegisterUserDto registrationDto);
     TransportDto filterRegistrations(String date);
     TransportDto findAllActiveRegistrations(int pageNum, UUID id);
+    TransportDto getAllExpiredRegistrations();
 }

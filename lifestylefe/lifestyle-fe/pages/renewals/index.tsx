@@ -5,11 +5,12 @@ import { DatePicker } from "@mui/x-date-pickers";
 import moment from "moment";
 import { GetServerSideProps } from "next";
 import React, { useEffect, useState } from "react";
-import { Member } from "../../common/types/Common";
+import { Member, MembershipType } from "../../common/types/Common";
 import { BASE_URL } from "../../common/utils/constants";
 
 export const getServerSideProps: GetServerSideProps<any> = async (context) => {
   let response = [];
+  let membershipTypesResponse = [];
   let error = {};
   const token = context.req.cookies?.token;
   try {
@@ -24,6 +25,18 @@ export const getServerSideProps: GetServerSideProps<any> = async (context) => {
     );
     const registrations = await resp.json();
     response = registrations.response;
+
+    const membershipTypesResp = await fetch(
+      `${BASE_URL}/membership/type`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      }
+    );
+    const membershipTypes = await membershipTypesResp.json();
+    membershipTypesResponse = membershipTypes.response;
   } catch (error) {
     return {
       redirect: {
@@ -35,6 +48,7 @@ export const getServerSideProps: GetServerSideProps<any> = async (context) => {
   return {
     props: {
       renewals: response,
+      membershipTypes: membershipTypesResponse,
       error,
       token,
     },
@@ -44,9 +58,10 @@ export const getServerSideProps: GetServerSideProps<any> = async (context) => {
 interface RenewalProps {
   renewals: any;
   token: string;
+  membershipTypes: MembershipType[]
 }
 
-function Renewals({ renewals, token }: RenewalProps) {
+function Renewals({ renewals, token, membershipTypes }: RenewalProps) {
   const [loading, setLoading] = useState(false);
   const [allRenewals, setAllRenewals] = useState<any>([]);
   const [selectedDate, setSelectedDate] = useState(moment().toISOString());
@@ -99,6 +114,8 @@ function Renewals({ renewals, token }: RenewalProps) {
       headerName: "Membership Type",
       minWidth: 200,
       renderCell: ({ value }) => <div>{value?.membershipName}</div>,
+      type: 'singleSelect',
+      valueOptions: membershipTypes?.map((membershipType: MembershipType) => membershipType.membershipName)
     },
     {
       field: "startDate",

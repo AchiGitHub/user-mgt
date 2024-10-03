@@ -51,6 +51,15 @@ public class RegistrationController {
         return ResponseEntity.ok(res);
     }
 
+    @GetMapping("/expired")
+    public ResponseEntity getAllExpiredRegistrations() {
+        TransportDto res = registrationService.getAllExpiredRegistrations();
+        if (res.getError() != null) {
+            return ResponseEntity.status(res.getError().getStatus()).body(res);
+        }
+        return ResponseEntity.ok(res);
+    }
+
     @GetMapping("/{id}")
     public ResponseEntity getRegistration(@PathVariable UUID id) {
         TransportDto res = registrationService.getRegistration(id);

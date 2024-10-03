@@ -5,6 +5,7 @@ import PaymentIcon from '@mui/icons-material/Payment';
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 import CurrencyExchangeIcon from '@mui/icons-material/CurrencyExchange';
 import HomeOutlinedIcon from '@mui/icons-material/HomeOutlined';
+import RemoveCircleOutlineIcon from '@mui/icons-material/RemoveCircleOutline';
 
 import { Sidebar } from '../types/Sidebar';
 import moment from 'moment';
@@ -20,6 +21,7 @@ export const SidebarContent: Sidebar[] = [
     { text: 'Duration', icon: CalendarMonthIcon, route: '/duration' },
     { text: 'Membership Types', icon: ManageAccountsIcon, route: '/membership' },
     { text: 'Store', icon: PaymentIcon, route: '/store' },
+    { text: 'Expired Registrations', icon: RemoveCircleOutlineIcon, route: '/expired' },
 ];
 
 export const DurationInitialValues = {
